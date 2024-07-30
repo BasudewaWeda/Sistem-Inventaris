@@ -33,6 +33,7 @@
         </div>
 
         <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITEKEY') }}" name="captchatest"></div>
+        <x-input-error :messages="$errors->get('g-recaptcha-response')" class="mt-2" />
 
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
