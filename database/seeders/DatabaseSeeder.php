@@ -17,28 +17,45 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create permission groups
+        $permissionGroups = [
+            ['permission_group_name' => 'inventaris', 'alias' => 'Inventaris'],
+            ['permission_group_name' => 'pemindahan-inventaris', 'alias' => 'Pemindahan Inventaris'],
+            ['permission_group_name' => 'user-management', 'alias' => 'User Management'],
+            ['permission_group_name' => 'role-management', 'alias' => 'Role Management'],
+            ['permission_group_name' => 'kantor-management', 'alias' => 'Kantor Management'],
+        ];
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        $permissionGroup = PermissionGroup::create([
-            'permission_group_name' => 'post-management',
-            'alias' => 'Post Management'
-        ]);
+        foreach ($permissionGroups as $permissionGroupData) {
+            PermissionGroup::create($permissionGroupData);
+        }
 
         // Create permissions
         $permissions = [
-            ['permission_name' => 'create-post', 'alias' => 'Create Post', 'permission_group_id' => $permissionGroup->permission_group_id],
-            ['permission_name' => 'edit-post', 'alias' => 'Edit Post', 'permission_group_id' => $permissionGroup->permission_group_id],
-            ['permission_name' => 'delete-post', 'alias' => 'Delete Post', 'permission_group_id' => $permissionGroup->permission_group_id],
-            ['permission_name' => 'view-post', 'alias' => 'View Post', 'permission_group_id' => $permissionGroup->permission_group_id],
+            ['permission_name' => 'inventaris', 'alias' => 'Inventaris', 'permission_group_id' => 1],
+            ['permission_name' => 'add-inventaris', 'alias' => 'Add Inventaris', 'permission_group_id' => 1],
+            ['permission_name' => 'ubah-status-inventaris', 'alias' => 'Ubah Status Inventaris', 'permission_group_id' => 1],
+            ['permission_name' => 'approval-inventaris', 'alias' => 'Approval Inventaris', 'permission_group_id' => 1],
+            ['permission_name' => 'pemindahan-inventaris', 'alias' => 'Pemindahan Inventaris', 'permission_group_id' => 2],
+            ['permission_name' => 'add-pemindahan-inventaris', 'alias' => 'Add Pemindahan Inventaris', 'permission_group_id' => 2],
+            ['permission_name' => 'ubah-status-pemindahan-inventaris', 'alias' => 'Ubah Status Pemindahan Inventaris', 'permission_group_id' => 2],
+            ['permission_name' => 'approval-pemindahan-inventaris', 'alias' => 'Approval Pemindahan Inventaris', 'permission_group_id' => 2],
+            ['permission_name' => 'user', 'alias' => 'User', 'permission_group_id' => 3],
+            ['permission_name' => 'add-user', 'alias' => 'Add User', 'permission_group_id' => 3],
+            ['permission_name' => 'edit-user', 'alias' => 'Edit User', 'permission_group_id' => 3],
+            ['permission_name' => 'delete-user', 'alias' => 'Delete User', 'permission_group_id' => 3],
+            ['permission_name' => 'role', 'alias' => 'Role', 'permission_group_id' => 4],
+            ['permission_name' => 'add-role', 'alias' => 'Add Role', 'permission_group_id' => 4],
+            ['permission_name' => 'edit-role', 'alias' => 'Edit Role', 'permission_group_id' => 4],
+            ['permission_name' => 'delete-role', 'alias' => 'Delete Role', 'permission_group_id' => 4],
+            ['permission_name' => 'kantor', 'alias' => 'Kantor', 'permission_group_id' => 5],
+            ['permission_name' => 'add-kantor', 'alias' => 'Add Kantor', 'permission_group_id' => 5],
+            ['permission_name' => 'edit-kantor', 'alias' => 'Edit Kantor', 'permission_group_id' => 5],
+            ['permission_name' => 'delete-kantor', 'alias' => 'Delete Kantor', 'permission_group_id' => 5],
         ];
 
         foreach ($permissions as $permissionData) {
-            $permission = Permission::create($permissionData);
+            Permission::create($permissionData);
         }
 
         // Create roles
@@ -46,8 +63,8 @@ class DatabaseSeeder extends Seeder
         $roleUser = Role::create(['role_name' => 'User']);
 
         // Attach permissions to roles
-        $roleAdmin->permissions()->attach([1, 2, 3, 4]); // Attach all permissions to admin
-        $roleUser->permissions()->attach([4]); // Attach view-post permission to user
+        $roleAdmin->permissions()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]); // Attach all permissions to admin
+        $roleUser->permissions()->attach([1, 2, 3, 5, 6, 7]); // Attach view-post permission to user
 
         // Create user
         $user = User::create([

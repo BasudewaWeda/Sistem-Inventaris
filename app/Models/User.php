@@ -55,20 +55,31 @@ class User extends Authenticatable
     }
 
     static public function getUsers() {
-        return self::get();
+        return self::with('currentRole')->get();
     }
 
     static public function getSingleUser($id) {
         return self::find($id);
     }
 
+    static function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+    }
+
     static public function createUser(array $data) {
         $user = new self;
         $user->user_name = trim($data['user_name']);
-        $user->email = trim($data['user_email']);
+        $user->email = trim($data['email']);
         $user->user_phone_number = trim($data['user_phone_number']);
-        $user->password = Hash::make($data['user_password']);
-        $user->current_role_id = $data['role_ids']->first();
+        $user->password = Hash::make(self::generateRandomString());
+        $user->current_role_id = $data['role_ids'][0];
 
         $user->save();
 

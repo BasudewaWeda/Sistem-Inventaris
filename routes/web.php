@@ -3,18 +3,19 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckPermission;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::view('test', 'test')
-    ->middleware(CheckPermission::class . ':create-post')
-    ->name('test');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -22,6 +23,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/user-management', [UserController::class, 'showUser'])
+    ->middleware(['auth', CheckPermission::class . ':user']);
 
+Route::get('/user-management/add', [UserController::class, 'showAddUser'])
+    ->middleware(['auth', CheckPermission::class . ':add-user']);
+
+Route::post('/user-management/add', [UserController::class, 'addUser'])
+    ->middleware(['auth', CheckPermission::class . ':add-user']);
 
 require __DIR__.'/auth.php';

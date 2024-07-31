@@ -28,7 +28,6 @@ class CheckPermission
 
         foreach ($user_current_role->permissions as $permission) {
             // permission_name = slug
-            // dd($permission->permission_name);
             if ($permission->permission_name == $permission_check) {
                 return $next($request);
             }
