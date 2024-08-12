@@ -23,6 +23,10 @@ class Kategori extends Model
         'nama_kategori',
     ];
 
+    public static function getKategori() {
+        return self::get();
+    }
+
     public function inventaris(): HasMany {
         return $this->hasMany(Inventaris::class, 'inventaris_id');
     }

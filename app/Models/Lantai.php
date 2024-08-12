@@ -24,8 +24,12 @@ class Lantai extends Model
         'nama_lantai'
     ];
 
+    static public function getLantaiRecords() {
+        return self::get();
+    }
+
     public function kantor(): BelongsTo {
-        return $this->belongsTo(Kantor::class, 'kode_kantor');
+        return $this->belongsTo(Kantor::class, 'kantor_id');
     }
 
     public function ruangan(): HasMany {

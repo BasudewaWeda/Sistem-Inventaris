@@ -24,7 +24,11 @@ class PermissionGroup extends Model
         'alias',
     ];
 
+    static public function getPermissionGroups() {
+        return self::with('permissions')->get();
+    }
+
     public function permissions(): HasMany {
-        return $this->hasMany(Permission::class, 'permission_id');
+        return $this->hasMany(Permission::class, 'permission_group_id');
     }
 }

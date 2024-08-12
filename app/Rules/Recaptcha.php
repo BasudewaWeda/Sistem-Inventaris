@@ -26,7 +26,11 @@ class Recaptcha implements ValidationRule
                 ]
             );
 
-        \Log::debug(print_r($response->body(), true));
+        if ($response->status() != 200) {
+            $fail('Invalid recaptcha');
+        }
+
+        // \Log::debug(print_r($response->body(), true));
         if (!json_decode($response->body(), true)['success']) {
             $fail('Invalid recaptcha');
         }

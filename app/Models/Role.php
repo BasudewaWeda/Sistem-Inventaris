@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -22,11 +24,12 @@ class Role extends Model
     protected $table = 'roles';
 
     protected $fillable = [
-        'role_name'
+        'role_name',
+        'slug',
     ];
 
     static public function getRoles() {
-        return self::get();
+        return self::with(['creator', 'editor'])->orderByDesc('updated_at')->paginate(10);
     }
 
     static public function getSingleRole($id) {
@@ -34,24 +37,24 @@ class Role extends Model
     }
 
     static public function createRole(array $data) {
-        $role = new self;
-        $role->role_name = trim($data['role_name']);
-
-        $role->save();
+        $role = self::create([
+            'role_name' => trim($data['role_name']),
+            'slug' => Str::slug(trim($data['role_name'])),
+        ]);
 
         $role->permissions()->attach($data['permission_ids']);
     }
 
-    static public function updateRole($id, array $data) {
-        $role = self::getSingleRole($id);
-        
+    static public function updateRole(self $role, array $data) {
         if(!$role) throw new Exception('Role not found');
 
         $role->role_name = trim($data['role_name']);
+        $role->slug = Str::slug(trim($data['role_name']));
         
         $role->save();
 
         $role->permissions()->sync($data['permission_ids']);
+        $role->touch();
     }
     
     static public function checkPermission($permission_name): bool {
@@ -62,15 +65,19 @@ class Role extends Model
         return false;
     }
 
-    static public function getRoleRecords() {
-        return self::get();
-    }
-
     public function users(): BelongsToMany {
         return $this->belongsToMany(User::class, 'user_role', 'role_id', 'user_id');
     }
 
     public function permissions(): BelongsToMany {
         return $this->belongsToMany(Permission::class, 'role_permission', 'role_id', 'permission_id');
+    }
+
+    public function creator(): BelongsTo {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function editor(): BelongsTo {
+        return $this->belongsTo(User::class, 'editor_id');
     }
 }

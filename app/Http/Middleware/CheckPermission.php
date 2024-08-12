@@ -14,25 +14,24 @@ class CheckPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $permission_check): Response
+    public function handle(Request $request, Closure $next, string ...$permissions): Response
     {
+        // dd('test2');
+
         if (!Auth::check()) {
             abort(403, 'Unauthorized');
         }
-
         $user_current_role = Auth::user()->currentRole;
-
-        // dd($permission);
-
-        // dd($user_current_role->permissions);
-
-        foreach ($user_current_role->permissions as $permission) {
-            // permission_name = slug
-            if ($permission->permission_name == $permission_check) {
-                return $next($request);
+        
+        foreach ($permissions as $permission_check) {
+            foreach ($user_current_role->permissions as $permission) {
+                // permission_name = slug
+                if ($permission->permission_name == $permission_check) {
+                    return $next($request);
+                }
             }
         }
-
+        
         return abort(403, 'Unauthorized');
     }
 }

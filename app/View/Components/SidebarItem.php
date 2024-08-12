@@ -15,13 +15,19 @@ class SidebarItem extends Component
     public $icon;
     public $url;
     public $active;
+    public $isLogOut;
 
-    public function __construct($name, $icon, $url)
+    public function __construct($name, $icon, $url, $isLogOut = false)
     {
         $this->name = $name;
         $this->icon = $icon;
         $this->url = $url;
-        $this->active = request()->is(trim($url, '/'));
+        $this->isLogOut = $isLogOut;
+        
+        $currentUrl = request()->path();
+        $basePath = trim($url, '/');
+        $this->active = $currentUrl === $basePath || str_starts_with($currentUrl, $basePath . '/');
+
     }
 
     /**

@@ -23,6 +23,10 @@ class Ruangan extends Model
         'nama_ruangan'
     ];
 
+    static public function getRuanganRecords() {
+        return self::get();
+    }
+
     public function lantai(): BelongsTo {
         return $this->belongsTo(Lantai::class, 'lantai_id');
     }

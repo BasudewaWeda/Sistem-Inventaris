@@ -14,7 +14,22 @@ return new class extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id('role_id');
             $table->string('role_name');
+            $table->string('slug');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('editor_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('creator_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('editor_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::create('permission_groups', function (Blueprint $table) {
@@ -94,14 +109,17 @@ return new class extends Migration
         });
 
         Schema::create('kantor', function (Blueprint $table) {
-            $table->string('kode_kantor', 3)->primary();
+            $table->id('kantor_id');
+            $table->string('kode_kantor', 3);
             $table->string('nama_kantor');
+            $table->string('slug');
             $table->string('sequence_kantor')->default('0001');
-            $table->string('email_kantor');
             $table->string('nomor_telepon_kantor');
             $table->string('alamat_kantor');
             $table->unsignedBigInteger('provinsi_id');
             $table->unsignedBigInteger('kabupaten_id');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('editor_id')->nullable();
             $table->timestamps();
 
             $table->foreign('provinsi_id')
@@ -115,17 +133,43 @@ return new class extends Migration
                 ->on('kabupaten')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
+            $table->foreign('creator_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('editor_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::create('lantai', function (Blueprint $table) {
             $table->id('lantai_id');
             $table->string('nama_lantai');
-            $table->string('kode_kantor');
+            $table->unsignedBigInteger('kantor_id');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('editor_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('kode_kantor')
-                ->references('kode_kantor')
+            $table->foreign('kantor_id')
+                ->references('kantor_id')
                 ->on('kantor')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('creator_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('editor_id')
+                ->references('user_id')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -134,6 +178,8 @@ return new class extends Migration
             $table->id('ruangan_id');
             $table->string('nama_ruangan');
             $table->unsignedBigInteger('lantai_id');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('editor_id')->nullable();
             $table->timestamps();
 
             $table->foreign('lantai_id')
@@ -141,12 +187,38 @@ return new class extends Migration
                 ->on('lantai')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
+            $table->foreign('creator_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('editor_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::create('kategori', function (Blueprint $table) {
             $table->id('kategori_id');
             $table->string('nama_kategori');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('editor_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('creator_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('editor_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
 
         Schema::create('barcode_inventaris', function (Blueprint $table) {
@@ -157,20 +229,25 @@ return new class extends Migration
 
         Schema::create('input_inventaris', function (Blueprint $table) {
             $table->id('input_inventaris_id');
+            $table->string('judul_input_inventaris');
+            $table->string('nama_inventaris');
             $table->date('tanggal_pembelian');
             $table->integer('jumlah_inventaris');
+            $table->integer('tahun_penyusutan');
             $table->string('harga_inventaris');
             $table->string('status_input_inventaris');
             $table->string('alasan_rejection')->nullable();
-            $table->unsignedBigInteger('pengisi_data');
+            $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('approver_1');
             $table->unsignedBigInteger('approver_2');
-            $table->string('kode_kantor');
+            $table->unsignedBigInteger('kantor_id');
+            $table->unsignedBigInteger('lantai_id');
+            $table->unsignedBigInteger('ruangan_id');
             $table->unsignedBigInteger('kategori_id');
 
             $table->timestamps();
 
-            $table->foreign('pengisi_data')
+            $table->foreign('creator_id')
                 ->references('user_id')
                 ->on('users')
                 ->onUpdate('cascade')
@@ -188,9 +265,21 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('kode_kantor')
-                ->references('kode_kantor')
+            $table->foreign('kantor_id')
+                ->references('kantor_id')
                 ->on('kantor')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('lantai_id')
+                ->references('lantai_id')
+                ->on('lantai')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('ruangan_id')
+                ->references('ruangan_id')
+                ->on('ruangan')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
@@ -206,18 +295,21 @@ return new class extends Migration
             $table->string('nomor_inventaris')->nullable();
             $table->string('nama_inventaris');
             $table->string('harga_inventaris');
-            $table->string('tanggal_pembelian');
+            $table->date('tanggal_pembelian');
             $table->integer('tahun_penyusutan');
-            $table->string('kode_kantor');
+            $table->string('status_inventaris');
             $table->unsignedBigInteger('kategori_id');
-            $table->unsignedBigInteger('barcode_id');
-            $table->unsignedBigInteger('pengisi_data');
+            $table->unsignedBigInteger('kantor_id');
+            $table->unsignedBigInteger('lantai_id');
+            $table->unsignedBigInteger('ruangan_id');
+            $table->unsignedBigInteger('barcode_id')->nullable();
+            $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('approver_1');
             $table->unsignedBigInteger('approver_2');
-            $table->unsignedBigInteger('input_inventaris_id');
+            $table->unsignedBigInteger('input_inventaris_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('pengisi_data')
+            $table->foreign('creator_id')
                 ->references('user_id')
                 ->on('users')
                 ->onUpdate('cascade')
@@ -235,9 +327,21 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('kode_kantor')
-                ->references('kode_kantor')
+            $table->foreign('kantor_id')
+                ->references('kantor_id')
                 ->on('kantor')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('lantai_id')
+                ->references('lantai_id')
+                ->on('lantai')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('ruangan_id')
+                ->references('ruangan_id')
+                ->on('ruangan')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
@@ -267,8 +371,8 @@ return new class extends Migration
             $table->unsignedBigInteger('approver_1');
             $table->unsignedBigInteger('approver_2');
             $table->string('alasan_rejection')->nullable();
-            $table->string('kode_kantor_tujuan');
-            $table->string('inventaris_id');
+            $table->unsignedBigInteger('kantor_id_tujuan');
+            $table->unsignedBigInteger('inventaris_id');
 
             $table->foreign('pengisi_data')
                 ->references('user_id')
@@ -288,14 +392,14 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('kode_kantor_tujuan')
-                ->references('kode_kantor')
+            $table->foreign('kantor_id_tujuan')
+                ->references('kantor_id')
                 ->on('kantor')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->foreign('inventaris_id')
-                ->references('kode_kantor')
+                ->references('kantor_id')
                 ->on('kantor')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

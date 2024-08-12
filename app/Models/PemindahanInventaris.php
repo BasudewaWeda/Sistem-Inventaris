@@ -42,6 +42,6 @@ class PemindahanInventaris extends Model
     }
 
     public function kantorTujuan(): BelongsTo {
-        return $this->belongsTo(Kantor::class, 'kode_kantor_tujuan');
+        return $this->belongsTo(Kantor::class, 'kantor_id_tujuan');
     }
 }

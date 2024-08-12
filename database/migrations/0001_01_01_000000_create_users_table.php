@@ -14,13 +14,28 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id('user_id');
             $table->string('user_name');
+            $table->string('slug');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('user_phone_number');
             $table->integer('current_role_id');
+            $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('editor_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('creator_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('editor_id')
+                ->references('user_id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
             // $table->foreign('current_role_id')
             //     ->references('role_id')

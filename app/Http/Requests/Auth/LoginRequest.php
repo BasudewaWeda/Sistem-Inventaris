@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-        \Log::debug(print_r($this->request->all(), true));
+        // \Log::debug(print_r($this->request->all(), true));
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],

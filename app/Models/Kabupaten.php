@@ -24,7 +24,7 @@ class Kabupaten extends Model
         'nama_kabupaten'
     ];
      
-    public function kabupaten(): BelongsTo {
+    public function provinsi(): BelongsTo {
        return $this->belongsTo(Provinsi::class, 'provinsi_id');
     }
 

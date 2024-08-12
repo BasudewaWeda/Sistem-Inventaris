@@ -6,65 +6,79 @@ use Exception;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
 {
     public function showUser() {
-        $addUser = Role::checkPermission('Add User');
-        $editUser = Role::checkPermission('Edit User');
-        $deleteUser = Role::checkPermission('Delete User');
+        $addUser = Role::checkPermission('add-user');
+        $editUser = Role::checkPermission('edit-user');
+        $deleteUser = Role::checkPermission('delete-user');
 
         $users = User::getUsers();
+
         return view('user.index', compact('addUser', 'editUser', 'deleteUser', 'users'));
     }
 
     public function showAddUser() {
-        $roles = Role::getRoleRecords();
+        $roles = Role::getRoles();
         return view('user.add', compact('roles'));
     }
 
     public function addUser(Request $request) {
         $request->validate([
             'email' => 'required|email|unique:users',
-            'user_name' => 'required|string|max:255',
-            'user_phone_number' => 'required|string|max:255',
+            'user_name' => 'required|string|max:40',
+            'user_phone_number' => 'required|string|max:12',
             'role_ids' => 'required|array|min:1',
         ]);
 
         User::createUser($request->all());
 
+        Alert::toast('User created');
+
         return redirect('/user-management')->with('success', 'New user created');
     }
 
-    public function showEditUser($id) {
-        if (!(Role::checkPermission('Edit User'))) abort(401);
+    public function showEditUser(User $user) {
+        if(!$user) return redirect('/user-management')->with('error', 'User not found');
 
-        $edited_user = User::getSingleUser($id);
+        $roles = Role::getRoles();
+        $user_roles = $user->roles;
 
-        if(!$edited_user) return redirect('panel/user')->with('error', 'User not found');
-
-        $roles = Role::getRoleRecords();
-        $edited_user_roles = $edited_user->roles;
-
-        return view('panel.user.edit', compact('edited_user', 'edited_user_roles', 'roles'));
+        return view('user.edit', compact('user', 'user_roles', 'roles'));
     }
 
-    public function updateUser($id, Request $request) {
-        if (!(Role::checkPermission('Edit User'))) abort(401);
-
+    public function editUser(User $user, Request $request) {
         $request->validate([
-            'email' => 'required|email|unique:user',
-            'user_name' => 'required|string|max:255',
-            'user_phone_number' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($user->user_id, 'user_id'),
+            ],
+            'user_name' => 'required|string|max:40',
+            'user_phone_number' => 'required|string|max:12',
             'role_ids' => 'required|array|min:1',
         ]);
 
         try {
-            User::updateUser($id, $request->all());
-            return redirect('panel/user')->with('success', 'User updated');
+            User::updateUser($user, $request->all());
+
+            Alert::toast('User updated');
+
+            return redirect('/user-management')->with('success', 'User updated');
         }
         catch (Exception $e) {
-            return redirect('panel/user')->with('error', $e->getMessage());
+            return redirect('/user-management')->with('error', $e->getMessage());
         }
+    }
+
+    public function deleteUser(User $user) {
+        $user->delete();
+
+        Alert::toast('User deleted');
+
+        return redirect('/user-management')->with('success', 'User deleted');
     }
 }

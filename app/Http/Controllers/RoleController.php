@@ -4,68 +4,75 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Role;
-use App\Models\Permission;
 use Illuminate\Http\Request;
+use App\Models\PermissionGroup;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class RoleController extends Controller
 {
     public function showRole() {
-        if (!(Role::checkPermission('Role'))) abort(401);
+        $addRole = Role::checkPermission('add-role');
+        $editRole = Role::checkPermission('edit-role');
+        $deleteRole = Role::checkPermission('delete-role');
 
-        $addRole = Role::checkPermission('Add Role');
-        $editRole = Role::checkPermission('Edit Role');
+        $title = 'Delete Role';
+        $text = "Are you sure you want to delete role?";
+        confirmDelete($title, $text);
 
         $roles = Role::getRoles();
-        return view('panel.role.list', compact('addRole', 'editRole', 'roles'));
+        return view('role.index', compact('addRole', 'editRole', 'deleteRole', 'roles'));
     }
     
     public function showAddRole() {
-        if (!(Role::checkPermission('Add Role'))) abort(401);
-
-        $permissions = Permission::getRoleRecords();
-        return view('panel.role.add', compact('permissions'));
+        $permissionGroups = PermissionGroup::getPermissionGroups();
+        return view('role.add', compact('permissionGroups'));
     }
 
     public function addRole(Request $request) {
-        if (!(Role::checkPermission('Add Role'))) abort(401);
-
         $request->validate([
-            'role_name' => 'required|string|max:255',
-            'permissions_ids' => 'required|array|min:1',
+            'role_name' => 'required|string|max:30',
+            'permission_ids' => 'required|array|min:1',
         ]);
 
         Role::createRole($request->all());
 
-        return redirect('panel/role')->with('success', 'New user created');
+        Alert::toast('Role created');
+
+        return redirect('/role-management')->with('success', 'New role created');
     }
 
-    public function showEditRole($id) {
-        if (!(Role::checkPermission('Edit Role'))) abort(401);
+    public function showEditRole(Role $role) {
+        if(!$role) return redirect('/role-management')->with('error', 'Role not found');
 
-        $edited_role = Role::getSingleRole($id);
+        $permissionGroups = PermissionGroup::getPermissionGroups();
+        $role_permissions = $role->permissions;
 
-        if(!$edited_role) return redirect('panel/role')->with('error', 'Role not found');
-
-        $edited_role_permissions = $edited_role->permissions();
-        $permissions = Permission::getRoleRecords();
-
-        return view('panel.role.edit', compact('permissions', 'edited_roles', 'edited_roles_permissions'));
+        return view('role.edit', compact('role', 'role_permissions', 'permissionGroups'));
     }
 
-    public function updateRole($id, Request $request) {
-        if (!(Role::checkPermission('Edit Role'))) abort(401);
-
+    public function editRole(Role $role, Request $request) {
         $request->validate([
-            'role_name' => 'required|string|max:255',
-            'permissions_ids' => 'required|array|min:1',
+            'role_name' => 'required|string|max:30',
+            'permission_ids' => 'required|array|min:1',
         ]);
 
         try {
-            Role::updateRole($id, $request->all());
-            return redirect('panel/role')->with('success', 'Role updated');
+            Role::updateRole($role, $request->all());
+
+            Alert::toast('Role updated');
+
+            return redirect('/role-management')->with('success', 'Role updated');
         }
         catch (Exception $e) {
-            return redirect('panel/role')->with('error', $e->getMessage());
+            return redirect('/role-management')->with('error', $e->getMessage());
         }
+    }
+
+    public function deleteRole(Role $role) {
+        $role->delete();
+
+        Alert::toast('Role deleted');
+
+        return redirect('/role-management')->with('success', 'Role deleted');
     }
 }
