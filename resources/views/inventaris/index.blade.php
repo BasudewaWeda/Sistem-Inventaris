@@ -17,19 +17,31 @@
 			value="Search"
 			class="items-center p-3 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900">
 		</form>
-		@if ($inputInventaris)
-		<div onclick="window.location.href='/inventaris-management/add'"
-			data-ripple-dark="true"
-			class="remove-selection ml-auto w-2/12 items-center p-3 leading-tight bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
-			Input Inventaris
+		<div class="ml-auto flex gap-2">
+			@if ($addPemindahanInventaris)
+			<form action="/inventaris-management/pemindahan" class="hidden" id="pemindahan-button">
+				<input type="hidden" name="selected_items" id="selected_items">
+				<div onclick="window.location.href='/inventaris-management/add'"
+					data-ripple-dark="true"
+					class="items-center p-3 leading-tight bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
+					<input type="submit" value="Pemindahan Inventaris" id="pemindahan-button" class="hover:cursor-pointer">
+				</div>
+			</form>
+			@endif
+			@if ($inputInventaris)
+			<div onclick="window.location.href='/inventaris-management/add'"
+				data-ripple-dark="true"
+				class="remove-selection w-1/8 items-center p-3 leading-tight bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
+				Input Inventaris
+			</div>
+			@endif
 		</div>
-		@endif
 	</div>
 
     <div
-		class="relative flex mx-8 flex-col overflow-scroll text-gray-700 bg-white shadow-md bg-clip-border">
-		<table class="w-full text-left table-auto px-8">
-		<thead>
+		class="relative mx-8 text-gray-700 bg-white shadow-md bg-clip-border">
+		<table class="w-full text-left table-auto px-8 ">
+		<thead class="sticky top-0">
 		  <tr>
 			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			</th>
@@ -85,10 +97,9 @@
 		</thead>
 		<tbody>
 			<form action="">
-				<input type="hidden" name="selected_items" id="selected_items">
 			@foreach ($inventarisRecord as $inventaris)
 				<tr class="even:bg-blue-gray-50/50">
-					@if (!(in_array($inventaris->status_inventaris, array('Pending Approval', 'Rejected', 'Approval 1'))))
+					@if (!(in_array($inventaris->status_inventaris, array('Pending Approval', 'Rejected', 'Approval 1', 'Pending Approval Pemindahan', 'Approval 1 Pemindahan'))))
 					<td class="p-4">
 						<input type="checkbox"
 							class="item-checkbox before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
@@ -104,6 +115,9 @@
 							clip-rule="evenodd"></path>
 							</svg>
 						</span>
+					</td>
+					@else
+					<td class="p-4">
 					</td>
 					@endif
 					<td class="p-4">
@@ -137,9 +151,9 @@
 					  	</p>
 					</td>
 					<td class="p-4">
-					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+					  	<a class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 hover:underline" href="/kantor-management/kantor/{{ $inventaris->kantor->slug }}">
 						{{ $inventaris->kantor->nama_kantor }}
-					  	</p>
+					  	</a>
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
@@ -148,10 +162,8 @@
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						@if ($inventaris->creator)
 						{{ $inventaris->creator->user_name }}
 					  	</p>
-						@endif
 					</td>
 					<td class="p-4">
 						<div class="flex gap-16 items-center">
@@ -173,9 +185,16 @@
 		document.addEventListener('DOMContentLoaded', function() {
 		    const checkboxes = document.querySelectorAll('.item-checkbox');
 		    const localStorageKey = 'selectedItems';
+			const pemindahanButton = document.getElementById('pemindahan-button');
 
 		    // Retrieve stored selected items from localStorage
 		    const storedIds = JSON.parse(localStorage.getItem(localStorageKey)) || [];
+			updateSelectedItemsField();
+			updateButtonVisibility();
+
+			function updateSelectedItemsField() {
+				document.getElementById('selected_items').value = storedIds;
+    		}
 
 		    // Check the stored IDs and mark the checkboxes
 		    checkboxes.forEach(checkbox => {
@@ -199,11 +218,23 @@
 		                    storedIds.splice(index, 1);
 		                }
 		            }
+					
+					updateSelectedItemsField();
+					updateButtonVisibility();
 				
 		            // Store the updated array in localStorage
 		            localStorage.setItem(localStorageKey, JSON.stringify(storedIds));
 		        });
 		    });
+
+			function updateButtonVisibility() {
+    		    if (storedIds.length > 0) {
+    		        pemindahanButton.style.display = 'inline-block'; // Show the button
+    		    } else {
+    		        pemindahanButton.style.display = 'none'; // Hide the button
+    		    }
+    		}
+
 			// Function to clear the selected items from localStorage
 			function clearSelectedItems() {
 				localStorage.removeItem(localStorageKey);

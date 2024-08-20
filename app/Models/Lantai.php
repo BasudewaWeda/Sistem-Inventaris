@@ -20,12 +20,46 @@ class Lantai extends Model
     protected $primaryKey = 'lantai_id';
     protected $table = 'lantai';
 
-    protected $fillables = [
-        'nama_lantai'
+    protected $fillable = [
+        'nama_lantai',
+        'kantor_id',
+        'creator_id',
+        'editor_id',
     ];
 
-    static public function getLantaiRecords() {
-        return self::get();
+    protected $touches = [
+        'kantor',
+    ];
+
+    static public function createLantai($namaLantai, $kantorId) {
+        $currentUserId = User::getCurrentUser()->user_id;
+
+        return self::create([
+            'nama_lantai' => trim($namaLantai),
+            'kantor_id' => $kantorId,
+            'creator_id' => $currentUserId,
+            'editor_id' => $currentUserId,
+        ]);
+    }
+
+    static public function updateLantai($id, array $data) {
+        $lantai = self::find($id);
+        $currentUserId = User::getCurrentUser()->user_id;
+
+        $lantai->nama_lantai = trim($data['nama_lantai']);
+        $lantai->editor_id = $currentUserId;
+
+        $lantai->save();
+    }
+
+    static public function deleteLantai(array $lantaiIds, $kantorId) {
+        self::where('kantor_id', $kantorId)
+            ->whereNotIn('lantai_id', $lantaiIds)
+            ->delete();
+    }
+
+    static public function getLantaiByKantor($kantorId) {
+        return self::where('kantor_id', $kantorId)->get();
     }
 
     public function kantor(): BelongsTo {

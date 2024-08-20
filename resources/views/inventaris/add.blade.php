@@ -73,7 +73,7 @@
                     >
                         <option value="">Select Kategori</option>
                         @foreach ($kategoriRecord as $kategori)
-                        <option value="{{ $kategori->kategori_id }}">{{ $kategori->nama_kategori }}</option>
+                        <option value="{{ $kategori->kategori_id }}" @if ($kategori->kategori_id == old('kategori_id')) selected @endif>{{ $kategori->nama_kategori }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -103,11 +103,12 @@
                 </label>
                 <input 
                 type="text" 
-                pattern="^\d+$"
-                placeholder="500000" 
+                pattern="^Rp\. \d{1,3}(\.\d{3})*(,\d{2})?$"
+                placeholder="Rp. 10.000.000,00" 
                 required
                 id="harga"
                 name="harga_inventaris"
+                oninput="formatCurrency(this)"
                 class="col-span-6 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                 value="{{ old('harga_inventaris') ?? "" }}"
                 >
@@ -157,7 +158,7 @@
                     >
                         <option value="">Select Kantor</option>
                         @foreach ($kantorRecord as $kantor)
-                        <option value="{{ $kantor->kantor_id }}">{{ $kantor->nama_kantor }}</option>
+                        <option value="{{ $kantor->kantor_id }}" @if ($kantor->kantor_id == old('kantor_id')) selected @endif>{{ $kantor->nama_kantor }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -208,7 +209,7 @@
                     >
                         <option value="">Select Approver</option>
                         @foreach ($firstApprovers as $approver)
-                        <option value="{{ $approver->user_id }}">{{ $approver->user_name }}</option>
+                        <option value="{{ $approver->user_id }}" @if ($approver->user_id == old('approver_1')) selected @endif>{{ $approver->user_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -227,7 +228,7 @@
                     >
                         <option value="">Select Approver</option>
                         @foreach ($secondApprovers as $approver)
-                        <option value="{{ $approver->user_id }}">{{ $approver->user_name }}</option>
+                        <option value="{{ $approver->user_id }}" @if ($approver->user_id == old('approver_2')) selected @endif>{{ $approver->user_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -259,40 +260,78 @@
             $('#ruangan').select2();
             $('#approver1').select2();
             $('#approver2').select2();
+    
+            var selectedLantaiId = "{{ old('lantai_id') }}"; // Retain the previously selected lantai
+            var selectedRuanganId = "{{ old('ruangan_id') }}"; // Retain the previously selected ruangan
+    
             $('#kantor').change(function() {
                 var kantorId = $(this).val();
                 $('#lantai').empty().append('<option value="">Select Lantai</option>');
                 $('#ruangan').empty().append('<option value="">Select Ruangan</option>');
-
+    
                 if (kantorId) {
                     $.ajax({
-                        url: '/inventaris-management/lantai/kantor/' + kantorId,
+                        url: '/kantor-management/api/lantai/kantor/' + kantorId,
                         type: 'GET',
                         success: function(data) {
                             data.forEach(function(lantai) {
-                                $('#lantai').append('<option value="' + lantai.lantai_id + '">' + lantai.nama_lantai + '</option>');
+                                var isSelected = lantai.lantai_id == selectedLantaiId ? 'selected' : '';
+                                $('#lantai').append('<option value="' + lantai.lantai_id + '" ' + isSelected + '>' + lantai.nama_lantai + '</option>');
                             });
                         }
                     });
                 }
             });
-
+    
             $('#lantai').change(function() {
                 var lantaiId = $(this).val();
                 $('#ruangan').empty().append('<option value="">Select Ruangan</option>');
-
+    
                 if (lantaiId) {
                     $.ajax({
-                        url: '/inventaris-management/ruangan/lantai/' + lantaiId,
+                        url: '/kantor-management/api/ruangan/lantai/' + lantaiId,
                         type: 'GET',
                         success: function(data) {
                             data.forEach(function(ruangan) {
-                                $('#ruangan').append('<option value="' + ruangan.ruangan_id + '">' + ruangan.nama_ruangan + '</option>');
+                                var isSelected = ruangan.ruangan_id == selectedRuanganId ? 'selected' : '';
+                                $('#ruangan').append('<option value="' + ruangan.ruangan_id + '" ' + isSelected + '>' + ruangan.nama_ruangan + '</option>');
                             });
                         }
                     });
                 }
             });
+    
+            // Trigger the change event to load the options on page load if values were previously selected
+            if ($('#kantor').val()) {
+                $('#kantor').trigger('change');
+            }
+    
+            if (selectedLantaiId) {
+                $('#lantai').trigger('change');
+            }
         });
+
+        function formatCurrency(input) {
+            let value = input.value.replace(/[^,\d]/g, ''); // Remove any non-numeric or non-comma characters
+
+            const splitValue = value.split(',');
+            let integerPart = splitValue[0];
+            let decimalPart = splitValue[1] || '';
+
+            const lengthOfDecimal = decimalPart.length;
+            if (lengthOfDecimal > 2) {
+                decimalPart = decimalPart.substring(0, 2); // Restrict decimal places to 2 digits
+            }
+        
+            // Add thousands separator to the integer part
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        
+            if (decimalPart) {
+                input.value = `Rp. ${integerPart},${decimalPart}`;
+            } else {
+                input.value = `Rp. ${integerPart}`;
+            }
+        }
     </script>
+    
 </x-app-layout>

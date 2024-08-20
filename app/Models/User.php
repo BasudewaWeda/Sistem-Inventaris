@@ -90,6 +90,24 @@ class User extends Authenticatable
         })->get();
     }
 
+    // Getting users with permission 'approval-inventaris-1'
+    static public function getPemindahanFirstApprovers() {
+        return self::whereHas('roles', function (Builder $query) {
+            $query->whereHas('permissions', function (Builder $query2) {
+                $query2->where('permission_name', '=', 'approval-pemindahan-inventaris-1');
+            });
+        })->get();
+    }
+
+    // Getting users with permission 'approval-inventaris-2'
+    static public function getPemindahanSecondApprovers() {
+        return self::whereHas('roles', function (Builder $query) {
+            $query->whereHas('permissions', function (Builder $query2) {
+                $query2->where('permission_name', '=', 'approval-pemindahan-inventaris-2');
+            });
+        })->get();
+    }
+
     // Checking if user is approver 1 or approver 2
     static public function approverCheck($id, $check) {
         $approver = self::with(['roles.permissions'])->find($id);
@@ -106,6 +124,18 @@ class User extends Authenticatable
     
         if ($check === 2 && $approver->roles->contains(function ($role) {
             return $role->permissions->contains('permission_name', 'approval-inventaris-2');
+        })) {
+            return true;
+        }
+    
+        if ($check === 3 && $approver->roles->contains(function ($role) {
+            return $role->permissions->contains('permission_name', 'approval-pemindahan-inventaris-1');
+        })) {
+            return true;
+        }
+    
+        if ($check === 4 && $approver->roles->contains(function ($role) {
+            return $role->permissions->contains('permission_name', 'approval-pemindahan-inventaris-2');
         })) {
             return true;
         }

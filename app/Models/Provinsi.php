@@ -22,6 +22,10 @@ class Provinsi extends Model
     protected $fillable = [
         'nama_provinsi'
     ];
+
+    static public function getProvinsiRecords() {
+        return self::get();
+    }
     
     public function kabupaten(): HasMany {
         return $this->hasMany(Kabupaten::class, 'provinsi_id');

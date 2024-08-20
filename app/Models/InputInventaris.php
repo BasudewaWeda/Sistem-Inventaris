@@ -40,18 +40,6 @@ class InputInventaris extends Model
 
     static public function getInputInventarisByApprover() {
         $currentUser = User::getCurrentUser();
-
-        // $query = self::with(['kategori', 'kantor'])
-        // ->where(function ($query) use ($currentUser) {
-        //     $query->where('approver_1', $currentUser->user_id)
-        //         ->where('status_inventaris', 'pending approval');
-        // })
-        // ->orWhere(function ($query) use ($currentUser) {
-        //     $query->where('approver_2', $currentUser->user_id)
-        //         ->where('status_inventaris', 'approved 1');
-        // })
-        // ->orderByRaw("FIELD(status_inventaris, 'approval 1', 'pending approval', 'approval 2')")
-        // ->paginate(5);
         
         $inputInventaris = self::with(['kategori', 'kantor'])
             ->where(function ($query) use ($currentUser) {
@@ -76,18 +64,19 @@ class InputInventaris extends Model
                 $currentUser->user_id,
                 $currentUser->user_id,
             ])
-            ->paginate(8);
+            ->paginate(8)->withQueryString();
         
         return $inputInventaris;
     }
 
     static public function getInputInventarisDetails(self $inputInventaris) {
         $inputInventaris->load(['creator', 'firstApprover', 'secondApprover', 'kategori', 'kantor', 'lantai', 'ruangan', 'inventaris']);
+        
         return $inputInventaris;
     }
 
     static public function createInputInventaris(array $data) {
-        return InputInventaris::create([
+        return self::create([
             'judul_input_inventaris' => trim($data['judul_input_inventaris']),
             'nama_inventaris' => trim($data['nama_inventaris']),
             'jumlah_inventaris' => trim($data['jumlah_inventaris']),

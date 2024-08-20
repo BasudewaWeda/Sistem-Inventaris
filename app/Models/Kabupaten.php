@@ -23,6 +23,10 @@ class Kabupaten extends Model
     protected $fillable = [
         'nama_kabupaten'
     ];
+
+    static public function getKabupatenByProvinsi($provinsiId) {
+        return self::where('provinsi_id', $provinsiId)->get();
+    }
      
     public function provinsi(): BelongsTo {
        return $this->belongsTo(Provinsi::class, 'provinsi_id');

@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
-      	<h1>Approval Inventaris</h1>
+      	<h1>Approval Pemindahan Inventaris</h1>
     </div>
 
 	<div class="flex mx-8 my-4 items-center">
@@ -26,37 +26,27 @@
 		  <tr>
 			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-				Judul Inputan
+				Judul Pemindahan
 			  </p>
 			</th>
 			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-				Tanggal Pembelian
+				Kantor Tujuan
 			  </p>
 			</th>
 			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-				Jumlah
+				Lantai
 			  </p>
 			</th>
             <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
               <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-                Kategori
+                Ruangan
               </p>
             </th>
 			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-				Total Harga
-			  </p>
-			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-				Penempatan
-			  </p>
-			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
-			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-				Status
+				Statu Pemindahan
 			  </p>
 			</th>
 			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
@@ -76,58 +66,48 @@
 		  </tr>
 		</thead>
 		<tbody>
-			@foreach ($inputInventarisRecord as $inputInventaris)
+			@foreach ($pemindahanInventarisRecord as $pemindahanInventaris)
 				<tr class="even:bg-blue-gray-50/50">
 					<td class="p-4">
 				  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inputInventaris->judul_input_inventaris }}
+						{{ $pemindahanInventaris->judul_pemindahan_inventaris }}
 				  		</p>
 					</td>
 					<td class="p-4">
-				  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inputInventaris->tanggal_pembelian }}
-				  		</p>
+				  		<a class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 hover:underline" href='/kantor-management/kantor/{{ $pemindahanInventaris->kantorTujuan->slug }}'>
+						{{ Str::limit($pemindahanInventaris->kantorTujuan->nama_kantor, 20, '...') }}
+				  		</a>
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inputInventaris->jumlah_inventaris }}
+						{{ $pemindahanInventaris->lantaiTujuan->nama_lantai }}
 					  	</p>
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inputInventaris->kategori->nama_kategori }}
+						{{ $pemindahanInventaris->ruanganTujuan->nama_ruangan }}
 					  	</p>
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ 'Rp.' . number_format($inputInventaris->harga_inventaris * $inputInventaris->jumlah_inventaris, 2, ',', '.') }}
-					  	</p>
-					</td>
-					<td class="p-4">
-					  	<a class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 hover:underline" href="/kantor-management/kantor/{{ $inputInventaris->kantor->slug }}">
-						{{ $inputInventaris->kantor->nama_kantor }}
-					  	</a>
-					</td>
-					<td class="p-4">
-					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inputInventaris->status_input_inventaris }}
+						{{ $pemindahanInventaris->status_pemindahan_inventaris }}
 					  	</p>
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						@if ($inputInventaris->creator)
-						{{ $inputInventaris->creator->user_name }}
+						@if ($pemindahanInventaris->creator)
+						{{ $pemindahanInventaris->creator->user_name }}
 					  	</p>
 						@endif
 					</td>
                     <td class="p-4">
                         <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                        {{ $inputInventaris->created_at }}
+                        {{ $pemindahanInventaris->created_at }}
                         </p>
                     </td>
 					<td class="p-4">
 						<div class="flex gap-16 items-center">
-                            <a href="/approval-inventaris/{{ $inputInventaris->input_inventaris_id }}" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900 hover:underline">View</a>
+                            <a href="/approval-pemindahan-inventaris/{{ $pemindahanInventaris->pemindahan_inventaris_id }}" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900 hover:underline">View</a>
 						</div>
 					</td>
 				</tr>
@@ -137,6 +117,6 @@
 	</div>
 
     <div class="mx-8 my-4">
-		{{ $inputInventarisRecord->links() }}
+		{{ $pemindahanInventarisRecord->links() }}
 	</div>
 </x-app-layout>

@@ -37,9 +37,13 @@ class Role extends Model
     }
 
     static public function createRole(array $data) {
+        $currentUser = User::getCurrentUser()->user_id;
+
         $role = self::create([
             'role_name' => trim($data['role_name']),
             'slug' => Str::slug(trim($data['role_name'])),
+            'creator_id' => $currentUser,
+            'editor_id' => $currentUser,
         ]);
 
         $role->permissions()->attach($data['permission_ids']);
@@ -50,6 +54,7 @@ class Role extends Model
 
         $role->role_name = trim($data['role_name']);
         $role->slug = Str::slug(trim($data['role_name']));
+        $role->editor_id = User::getCurrentUser()->user_id;
         
         $role->save();
 

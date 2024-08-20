@@ -177,6 +177,7 @@ return new class extends Migration
         Schema::create('ruangan', function (Blueprint $table) {
             $table->id('ruangan_id');
             $table->string('nama_ruangan');
+            $table->string('detail_ruangan')->nullable();
             $table->unsignedBigInteger('lantai_id');
             $table->unsignedBigInteger('creator_id')->nullable();
             $table->unsignedBigInteger('editor_id')->nullable();
@@ -204,6 +205,7 @@ return new class extends Migration
         Schema::create('kategori', function (Blueprint $table) {
             $table->id('kategori_id');
             $table->string('nama_kategori');
+            $table->string('slug');
             $table->unsignedBigInteger('creator_id')->nullable();
             $table->unsignedBigInteger('editor_id')->nullable();
             $table->timestamps();
@@ -221,8 +223,8 @@ return new class extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::create('barcode_inventaris', function (Blueprint $table) {
-            $table->id('barcode_id');
+        Schema::create('qrcode_inventaris', function (Blueprint $table) {
+            $table->id('qrcode_id');
             $table->string('file_path');
             $table->timestamps();
         });
@@ -298,11 +300,12 @@ return new class extends Migration
             $table->date('tanggal_pembelian');
             $table->integer('tahun_penyusutan');
             $table->string('status_inventaris');
+            $table->string('kondisi_inventaris');
             $table->unsignedBigInteger('kategori_id');
             $table->unsignedBigInteger('kantor_id');
             $table->unsignedBigInteger('lantai_id');
             $table->unsignedBigInteger('ruangan_id');
-            $table->unsignedBigInteger('barcode_id')->nullable();
+            $table->unsignedBigInteger('qrcode_id')->nullable();
             $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('approver_1');
             $table->unsignedBigInteger('approver_2');
@@ -351,9 +354,9 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             
-            $table->foreign('barcode_id')
-                ->references('barcode_id')
-                ->on('barcode_inventaris')
+            $table->foreign('qrcode_id')
+                ->references('qrcode_id')
+                ->on('qrcode_inventaris')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             
@@ -366,15 +369,17 @@ return new class extends Migration
 
         Schema::create('pemindahan_inventaris', function (Blueprint $table) {
             $table->id('pemindahan_inventaris_id');
+            $table->string('judul_pemindahan_inventaris');
             $table->string('status_pemindahan_inventaris');
-            $table->unsignedBigInteger('pengisi_data');
+            $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('approver_1');
             $table->unsignedBigInteger('approver_2');
             $table->string('alasan_rejection')->nullable();
             $table->unsignedBigInteger('kantor_id_tujuan');
-            $table->unsignedBigInteger('inventaris_id');
+            $table->unsignedBigInteger('lantai_id_tujuan');
+            $table->unsignedBigInteger('ruangan_id_tujuan');
 
-            $table->foreign('pengisi_data')
+            $table->foreign('creator_id')
                 ->references('user_id')
                 ->on('users')
                 ->onUpdate('cascade')
@@ -398,9 +403,15 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('inventaris_id')
-                ->references('kantor_id')
-                ->on('kantor')
+            $table->foreign('lantai_id_tujuan')
+                ->references('lantai_id')
+                ->on('lantai')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('ruangan_id_tujuan')
+                ->references('ruangan_id')
+                ->on('ruangan')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
@@ -440,7 +451,7 @@ return new class extends Migration
         Schema::dropIfExists('lantai');
         Schema::dropIfExists('ruangan');
         Schema::dropIfExists('kategori');
-        Schema::dropIfExists('barcode_inventaris');
+        Schema::dropIfExists('qrcode_inventaris');
         Schema::dropIfExists('input_inventaris');
         Schema::dropIfExists('inventaris');
         Schema::dropIfExists('pemindahan_inventaris');

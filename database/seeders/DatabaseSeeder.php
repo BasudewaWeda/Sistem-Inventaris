@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ['permission_group_name' => 'user-management', 'alias' => 'User Management'],
             ['permission_group_name' => 'role-management', 'alias' => 'Role Management'],
             ['permission_group_name' => 'kantor-management', 'alias' => 'Kantor Management'],
+            ['permission_group_name' => 'kategori-management', 'alias' => 'Kategori Management'],
         ];
 
         foreach ($permissionGroups as $permissionGroupData) {
@@ -34,7 +35,7 @@ class DatabaseSeeder extends Seeder
         $permissions = [
             ['permission_name' => 'view-inventaris', 'alias' => 'View Inventaris', 'permission_group_id' => 1],
             ['permission_name' => 'input-inventaris', 'alias' => 'Input Inventaris', 'permission_group_id' => 1],
-            ['permission_name' => 'ubah-status-inventaris', 'alias' => 'Ubah Status Inventaris', 'permission_group_id' => 1],
+            ['permission_name' => 'ubah-kondisi-inventaris', 'alias' => 'Ubah Kondisi Inventaris', 'permission_group_id' => 1],
             ['permission_name' => 'view-approval-inventaris', 'alias' => 'View Approval Inventaris', 'permission_group_id' => 1],
             ['permission_name' => 'approval-inventaris-1', 'alias' => 'Approval Inventaris 1', 'permission_group_id' => 1],
             ['permission_name' => 'approval-inventaris-2', 'alias' => 'Approval Inventaris 2', 'permission_group_id' => 1],
@@ -56,6 +57,11 @@ class DatabaseSeeder extends Seeder
             ['permission_name' => 'add-kantor', 'alias' => 'Add Kantor', 'permission_group_id' => 5],
             ['permission_name' => 'edit-kantor', 'alias' => 'Edit Kantor', 'permission_group_id' => 5],
             ['permission_name' => 'delete-kantor', 'alias' => 'Delete Kantor', 'permission_group_id' => 5],
+            ['permission_name' => 'view-kategori', 'alias' => 'View Kategori', 'permission_group_id' => 6],
+            ['permission_name' => 'add-kategori', 'alias' => 'Add Kategori', 'permission_group_id' => 6],
+            ['permission_name' => 'edit-kategori', 'alias' => 'Edit Kategori', 'permission_group_id' => 6],
+            ['permission_name' => 'delete-kategori', 'alias' => 'Delete Kategori', 'permission_group_id' => 6],
+            ['permission_name' => 'laporan-inventaris', 'alias' => 'Laporan Inventaris', 'permission_group_id' => 1],
         ];
 
         foreach ($permissions as $permissionData) {
@@ -69,10 +75,10 @@ class DatabaseSeeder extends Seeder
         $roleKepalaDivisi = Role::create(['role_name' => 'Kepala Divisi', 'slug' => 'kepala-divisi']);
 
         // Attach permissions to roles
-        $roleAdmin->permissions()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
-        $roleUser->permissions()->attach([1, 2, 3, 7]);
-        $roleKepalaBagian->permissions()->attach([3, 6, 12]);
-        $roleKepalaDivisi->permissions()->attach([3, 5, 11]);
+        $roleAdmin->permissions()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
+        $roleUser->permissions()->attach([1, 2, 3, 7, 29]);
+        $roleKepalaBagian->permissions()->attach([3, 6, 12, 29]);
+        $roleKepalaDivisi->permissions()->attach([3, 5, 11, 29]);
 
         // Create user
         $user = User::create([

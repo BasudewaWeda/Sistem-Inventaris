@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,6 +29,7 @@ class Inventaris extends Model
         'tanggal_pembelian',
         'tahun_penyusutan',
         'status_inventaris',
+        'kondisi_inventaris',
         'kategori_id',
         'kantor_id',
         'lantai_id',
@@ -38,14 +40,37 @@ class Inventaris extends Model
         'input_inventaris_id',
     ];
 
+    static public function getInventarisByIds($ids) {
+        $relations = ['kategori', 'kantor', 'lantai', 'ruangan', 'firstApprover', 'secondApprover'];
+        return self::with($relations)->whereIn('inventaris_id', $ids)->get();
+    }
+
     static public function getInventarisRecord() {
         $relations = ['kategori', 'kantor', 'lantai', 'ruangan', 'creator'];
         return self::with($relations)->filter(request(['search']))->orderByDesc('updated_at', 'inventaris_id')->paginate(10)->withQueryString();
     }
 
-    static public function getInvetarisDetails(self $inventaris) {
-        $inventaris->load(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover']);
+    static public function getInventarisDetails(self $inventaris) {
+        $inventaris->load(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover', 'qrcode']);
         return $inventaris;
+    }
+
+    static public function getLaporanInventaris(array $request) {
+        $query = self::with(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover']);
+
+        if (!empty($request['kategori_id'])) {
+            $query->where('kategori_id', $request['kategori_id']);
+        }
+
+        if (!empty($request['status'])) {
+            $query->where('status_inventaris', $request['status']);
+        }
+
+        if (!empty($request['kondisi'])) {
+            $query->where('kondisi_inventaris', $request['kondisi']);
+        }
+
+        return $query->orderByDesc('created_at')->paginate(10)->withQueryString();
     }
 
     function scopeFilter(Builder $query, array $filters) : void {
@@ -93,6 +118,7 @@ class Inventaris extends Model
                 'harga_inventaris' => $data['harga_inventaris'],
                 'tahun_penyusutan' => $data['tahun_penyusutan'],
                 'status_inventaris' => 'Pending Approval',
+                'kondisi_inventaris' => 'Normal',
                 'kategori_id' => $data['kategori_id'],
                 'kantor_id' => $data['kantor_id'],
                 'lantai_id' => $data['lantai_id'],
@@ -109,6 +135,12 @@ class Inventaris extends Model
         self::insert($inventarisData);
     }
 
+    static public function ubahKondisiInventaris(self $inventaris, string $kondisi) {
+        $inventaris->kondisi_inventaris = $kondisi;
+
+        $inventaris->save();
+    }
+
     static public function approveInventaris(InputInventaris $inputInventaris) {
         $inventarisCollection = $inputInventaris->inventaris;
         $statusInputInventaris = $inputInventaris->status_input_inventaris;
@@ -120,6 +152,9 @@ class Inventaris extends Model
             $inventarisCollection->each(function ($inventaris) use ($statusInputInventaris, $kodeKantor, &$sequenceKantor) {
                 $inventaris->nomor_inventaris = "INV/" . $kodeKantor . "/" . date('m') . "/" . date('y') . "/" . str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
                 $inventaris->status_inventaris = $statusInputInventaris;
+
+                $qrCode = QRCodeInventaris::createQRCode($inventaris);
+                $inventaris->qrcode_id = $qrCode->qrcode_id;
     
                 $sequenceKantor++;
     
@@ -130,21 +165,64 @@ class Inventaris extends Model
             $inputInventaris->kantor->save();
         }
         else {
-            $inventarisCollection->each(function ($inventaris) use ($statusInputInventaris) {
-                $inventaris->status_inventaris = $statusInputInventaris;
-    
-                $inventaris->save();
-            });
+            $inventarisIds = $inventarisCollection->pluck('inventaris_id');
+            $currentTime = Carbon::now();
+
+            self::whereIn('inventaris_id', $inventarisIds)
+                ->update(['status_inventaris' => $statusInputInventaris, 'updated_at' => $currentTime]);
         }
     }
 
-    // static public function approveInventaris($inventarisCollection, string $statusInputInventaris) {
-    //     $inventarisCollection->each(function ($inventaris) use ($statusInputInventaris) {
-    //         $inventaris->status_inventaris = $statusInputInventaris;
+    static public function rejectInventaris(InputInventaris $inputInventaris) {
+        $inventarisIds = $inputInventaris->inventaris->pluck('inventaris_id');
 
-    //         $inventaris->save();
-    //     });
-    // }
+        self::whereIn('inventaris_id', $inventarisIds)->delete(); // Deleted because rejected
+    }
+
+    static public function approvePemindahanInventaris(PemindahanInventaris $pemindahanInventaris) {
+        $inventarisCollection = $pemindahanInventaris->inventaris;
+        $statusPemindahanInventaris = $pemindahanInventaris->status_pemindahan_inventaris;
+
+        if ($statusPemindahanInventaris == "Approval 2") {
+            $kantorTujuan = $pemindahanInventaris->kantorTujuan;
+            $kodeKantor = $kantorTujuan->kode_kantor;
+            $sequenceKantor = (int)$kantorTujuan->sequence_kantor;
+
+            $idKantorTujuan = $kantorTujuan->kantor_id;
+            $idLantaiTujuan = $pemindahanInventaris->lantaiTujuan->lantai_id;
+            $idRuanganTujuan = $pemindahanInventaris->ruanganTujuan->ruangan_id;
+    
+            $inventarisCollection->each(function ($inventaris) use ($statusPemindahanInventaris, $kodeKantor, &$sequenceKantor, $idKantorTujuan, $idLantaiTujuan, $idRuanganTujuan) {
+                $inventaris->nomor_inventaris = "INV/" . $kodeKantor . "/" . date('m') . "/" . date('y') . "/" . str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
+                $inventaris->status_inventaris = $statusPemindahanInventaris;
+                $inventaris->kantor_id = $idKantorTujuan;
+                $inventaris->lantai_id = $idLantaiTujuan;
+                $inventaris->ruangan_id = $idRuanganTujuan;
+    
+                $sequenceKantor++;
+    
+                $inventaris->save();
+            });
+    
+            $pemindahanInventaris->kantorTujuan->sequence_kantor = str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
+            $pemindahanInventaris->kantorTujuan->save();
+        }
+        else {
+            $inventarisIds = $inventarisCollection->pluck('inventaris_id');
+            $currentTime = Carbon::now();
+
+            self::whereIn('inventaris_id', $inventarisIds)
+                ->update(['status_inventaris' => $statusPemindahanInventaris, 'updated_at' => $currentTime]);
+        }
+    }
+
+    static public function rejectPemindahanInventaris(PemindahanInventaris $pemindahanInventaris) {
+        $inventarisIds = $pemindahanInventaris->inventaris->pluck('inventaris_id');
+        $currentTime = Carbon::now();
+
+        self::whereIn('inventaris_id', $inventarisIds)
+            ->update(['status_inventaris' => 'Approval 2', 'updated_at' => $currentTime]); // Back to approval 2 because pemindahan rejected
+    }
 
     // Changing number format
     protected function hargaInventaris(): Attribute {
@@ -170,8 +248,8 @@ class Inventaris extends Model
         return $this->belongsTo(Ruangan::class, 'ruangan_id');
     }
 
-    public function barcode(): BelongsTo {
-        return $this->belongsTo(BarcodeInventaris::class, 'barcode_id');
+    public function qrcode(): BelongsTo {
+        return $this->belongsTo(QRCodeInventaris::class, 'qrcode_id');
     }
 
     public function inputInventaris(): BelongsTo {

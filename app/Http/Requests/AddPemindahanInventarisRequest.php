@@ -7,7 +7,7 @@ use App\Models\Lantai;
 use App\Models\Ruangan;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddInventarisRequest extends FormRequest
+class AddPemindahanInventarisRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,39 +25,29 @@ class AddInventarisRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul_input_inventaris' => 'required|string|max:50',
-            'nama_inventaris' => 'required|string|max:50',
-            'jumlah_inventaris' => 'required|numeric',
-            'harga_inventaris' => [
-                'required',
-                'regex:/^Rp\. \d{1,3}(\.\d{3})*(,\d{2})?$/',
-                'string'
-            ],
-            'kategori_id' =>'required|numeric|exists:kategori,kategori_id',
-            'tanggal_pembelian' => 'required|date',
-            'tahun_penyusutan' => 'required|numeric',
-            'kantor_id' => 'required|numeric|exists:kantor,kantor_id',
-            'lantai_id' => [
+            'judul_pemindahan_inventaris' => 'required|string|max:50',
+            'kantor_id_tujuan' => 'required|numeric|exists:kantor,kantor_id',
+            'lantai_id_tujuan' => [
                 'required',
                 'numeric',
                 'exists:lantai,lantai_id',
                 function ($attribute, $value, $fail) {
                     if ($value !== null) {
                         $lantai = Lantai::find($value);
-                        if (!$lantai || $lantai->kantor_id != $this->input('kantor_id')) {
+                        if (!$lantai || $lantai->kantor_id != $this->input('kantor_id_tujuan')) {
                             $fail('Lantai tidak terdapat pada kantor tersebut');
                         }
                     }
                 }
             ],
-            'ruangan_id' => [
+            'ruangan_id_tujuan' => [
                 'required',
                 'numeric',
                 'exists:ruangan,ruangan_id',
                 function ($attribute, $value, $fail) {
                     if ($value !== null) {
                         $ruangan = Ruangan::find($value);
-                        if (!$ruangan || $ruangan->lantai_id != $this->input('lantai_id')) {
+                        if (!$ruangan || $ruangan->lantai_id != $this->input('lantai_id_tujuan')) {
                             $fail('Ruangan tidak terdapat pada lantai tersebut');
                         }
                     }

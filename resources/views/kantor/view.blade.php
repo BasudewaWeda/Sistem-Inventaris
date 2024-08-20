@@ -59,12 +59,12 @@
                 {{ $kantorDetails->kabupaten->nama_kabupaten }}
             </p>
         </div>
-        <div class="w-4/6 grid grid-cols-10 mb-4 items-start h-[45vh]">
+        <div class="w-4/6 grid grid-cols-10 mb-4 items-start max-h-[45vh]">
             <h6
             class="col-span-2 mt-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                 Lantai
             </h6>
-            <div class="col-span-8 overflow-y-scroll h-full">
+            <div class="col-span-8 max-h-[45vh] overflow-y-scroll">
                 @foreach ($kantorDetails->lantai as $lantai)
                     <div
                     class="flex mb-2 justify-between items-center rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 p-3 bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
@@ -76,19 +76,50 @@
                         </p>
                     </div>
                     @if (!$lantai->ruangan->isEmpty())
-                    @foreach ($lantai->ruangan as $ruangan)
-                        <div
-                        class="flex ml-4 mb-2 p-1 justify-between items-center rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                        >
-                            <p  
-                            class="bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                            >
-                                {{ $ruangan->nama_ruangan }}
-                            </p>
-                            {{-- TODO: Link to inventaris with query --}}
-                            <a href="" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900 hover:underline">View</a>
-                        </div>
-                    @endforeach
+                    <div
+	                	class="relative flex mx-8 mb-4 flex-col text-gray-700 bg-white shadow-md bg-clip-border">
+	                	<table class="w-full text-left table-auto px-8">
+	                	<thead>
+	                	  <tr>
+	                		<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+	                		  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+	                			Nama Ruangan
+	                		  </p>
+	                		</th>
+	                		<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+	                		  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+	                			Jumlah Inventaris
+	                		  </p>
+	                		</th>
+	                		<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+	                		  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
+	                			Detail Ruangan
+	                		  </p>
+	                		</th>
+	                	</thead>
+	                	<tbody>
+	                		@foreach ($lantai->ruangan as $ruangan)
+	                			<tr class="even:bg-blue-gray-50/50 items-center">
+	                				<td class="p-4">
+	                			  		<a class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 hover:underline" href="/kantor-management/ruangan/{{ $ruangan->ruangan_id }}">
+	                					{{ $ruangan->nama_ruangan }}
+	                			  		</a>
+	                				</td>
+	                				<td class="p-4">
+	                			  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+	                					{{ $ruangan->inventaris()->count() }}
+	                			  		</p>
+	                				</td>
+	                				<td class="p-4">
+	                			  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+	                					{{ $ruangan->detail_ruangan }}
+	                			  		</p>
+	                				</td>
+	                			</tr>
+	                		@endforeach
+	                	</tbody>
+	                	</table>
+	                </div>
                     @endif
                 @endforeach
             </div>
