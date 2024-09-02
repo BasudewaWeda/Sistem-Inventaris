@@ -36,7 +36,7 @@
                 <p
                 class="col-span-8 bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                 >
-                    {{ $inventarisDetails->tanggal_pembelian }}
+                    {{ $inventarisDetails->tanggal_pembelian->format('Y-m-d') }}
                 </p>
             </div>
             <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
@@ -139,7 +139,16 @@
                     {{ $inventarisDetails->creator->user_name }}
                 </p>
             </div>
-            <div class="flex gap-2 justify-end w-4/6">
+            <div class="flex gap-2 justify-between w-4/6">
+                <div class="flex">
+                    <a 
+                        href="/inventaris-management/kondisi/{{ $inventarisDetails->inventaris_id }}" 
+                        data-ripple-dark="true"
+                        class="p-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 "
+                        >
+                        Ubah Kondisi
+                    </a>
+                </div>
                 <div class="flex">
                     <a 
                         href="{{ url()->previous() ?? '/inventaris-management' }}" 
@@ -150,6 +159,7 @@
                 </div>
             </div>
         </div>
+        @if (!empty($inventarisDetails->qrcode))
         <div class="relative w-6/12 max-h-[70vh] mx-8 mt-8 mb-2 flex flex-col text-gray-700 bg-white">
             <p  
             class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
@@ -162,5 +172,6 @@
                 </a>
             </div>
         </div>
+        @endif
     </div>
 </x-app-layout>

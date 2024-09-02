@@ -87,6 +87,7 @@
                 <input 
                 type="text" 
                 pattern="^\d+$"
+                title="Digit only"
                 placeholder="100"
                 required
                 id="jumlah"
@@ -104,6 +105,7 @@
                 <input 
                 type="text" 
                 pattern="^Rp\. \d{1,3}(\.\d{3})*(,\d{2})?$"
+                title="Digit only"
                 placeholder="Rp. 10.000.000,00" 
                 required
                 id="harga"
@@ -137,6 +139,7 @@
                 <input 
                 type="text"
                 pattern="^\d+$"
+                title="Digit only"
                 required
                 id="tahun_penyusutan"
                 name="tahun_penyusutan"

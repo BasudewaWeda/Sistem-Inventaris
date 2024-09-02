@@ -62,6 +62,7 @@ class DatabaseSeeder extends Seeder
             ['permission_name' => 'edit-kategori', 'alias' => 'Edit Kategori', 'permission_group_id' => 6],
             ['permission_name' => 'delete-kategori', 'alias' => 'Delete Kategori', 'permission_group_id' => 6],
             ['permission_name' => 'laporan-inventaris', 'alias' => 'Laporan Inventaris', 'permission_group_id' => 1],
+            ['permission_name' => 'laporan-pemindahan-inventaris', 'alias' => 'Laporan Pemindahan Inventaris', 'permission_group_id' => 2],
         ];
 
         foreach ($permissions as $permissionData) {
@@ -69,16 +70,16 @@ class DatabaseSeeder extends Seeder
         }
 
         // Create roles
-        $roleAdmin = Role::create(['role_name' => 'Super Admin', 'slug' => 'admin']);
+        $roleAdmin = Role::create(['role_name' => 'Super Admin', 'slug' => 'super-admin']);
         $roleUser = Role::create(['role_name' => 'User', 'slug' => 'user']);
         $roleKepalaBagian = Role::create(['role_name' => 'Kepala Bagian', 'slug' => 'kepala-bagian']);
         $roleKepalaDivisi = Role::create(['role_name' => 'Kepala Divisi', 'slug' => 'kepala-divisi']);
 
         // Attach permissions to roles
-        $roleAdmin->permissions()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
-        $roleUser->permissions()->attach([1, 2, 3, 7, 29]);
-        $roleKepalaBagian->permissions()->attach([3, 6, 12, 29]);
-        $roleKepalaDivisi->permissions()->attach([3, 5, 11, 29]);
+        $roleAdmin->permissions()->attach([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+        $roleUser->permissions()->attach([1, 2, 3, 7, 29, 30]);
+        $roleKepalaBagian->permissions()->attach([3, 6, 12, 29, 30]);
+        $roleKepalaDivisi->permissions()->attach([3, 5, 11, 29, 30]);
 
         // Create user
         $user = User::create([
@@ -88,6 +89,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'user_phone_number' => '08123456789',
             'current_role_id' => $roleAdmin->role_id,
+            'has_changed_password' => 1,
         ]);
 
         // Attach roles to user
@@ -101,6 +103,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'user_phone_number' => '08123456789',
             'current_role_id' => $roleUser->role_id,
+            'has_changed_password' => 1,
             'creator_id' => 1,
         ]);
 
@@ -114,6 +117,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'user_phone_number' => '08123456789',
             'current_role_id' => $roleKepalaBagian->role_id,
+            'has_changed_password' => 1,
             'creator_id' => 1,
         ]);
 
@@ -126,6 +130,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'user_phone_number' => '08123456789',
             'current_role_id' => $roleKepalaBagian->role_id,
+            'has_changed_password' => 1,
             'creator_id' => 1,
         ]);
 
@@ -138,6 +143,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'user_phone_number' => '08123456789',
             'current_role_id' => $roleKepalaDivisi->role_id,
+            'has_changed_password' => 1,
             'creator_id' => 1,
         ]);
 
@@ -150,6 +156,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'user_phone_number' => '08123456789',
             'current_role_id' => $roleKepalaDivisi->role_id,
+            'has_changed_password' => 1,
             'creator_id' => 1,
         ]);
 

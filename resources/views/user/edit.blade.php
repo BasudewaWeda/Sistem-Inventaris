@@ -67,7 +67,8 @@
                 </label>
                 <input 
                 type="text" 
-                pattern="^08[1-9][0-9]{7,9}$"
+                pattern="^08[1-9][0-9]{7,10}$"
+                title="Nomor telepon harus dimulai dengan '08', diikuti oleh 8 hingga 11 digit angka."
                 placeholder="08123456789" 
                 required
                 id="user_phone_number"
@@ -113,23 +114,55 @@
                     @endforeach
                 </div>
             </div>
-            <div class="flex gap-4 justify-end">
+            <div class="grid grid-cols-8 gap-4 items-center mb-4">
+                <label 
+                for="status" 
+                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                    Status
+                </label>
+                <div class="col-span-6">
+                    <select
+                    class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                    name="status"
+                    id="status"
+                    >
+                        <option value="active" @if ($user->status == 'active') selected @endif>Active</option>
+                        <option value="inactive" @if ($user->status == 'inactive') selected @endif>Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-between">
                 <div class="flex">
                     <a 
-                        href="/user-management" 
+                        href="/user-management/reset-password/{{ $user->slug }}" 
                         data-ripple-dark="true"
-                        class="p-2 bg-blue-gray-100 text-blue-gray-700 transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
-                        Cancel
+                        class="p-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
+                        Reset Password
                     </a>
                 </div>
-                <div data-ripple-dark="true">
-                    <input
-                        class="p-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 "
-                        type="submit"
-                        value="Save User"
-                    />
+                <div class="flex gap-4 justify-end">
+                    <div class="flex">
+                        <a 
+                            href="/user-management" 
+                            data-ripple-dark="true"
+                            class="p-2 bg-blue-gray-100 text-blue-gray-700 transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
+                            Cancel
+                        </a>
+                    </div>
+                    <div data-ripple-dark="true">
+                        <input
+                            class="p-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 "
+                            type="submit"
+                            value="Save User"
+                        />
+                    </div>
                 </div>
             </div>
         </form>
     </div>
+    <script type="text/javascript">	
+        $(document).ready(function() {
+            $('#status').select2();
+        });
+    </script>
 </x-app-layout>

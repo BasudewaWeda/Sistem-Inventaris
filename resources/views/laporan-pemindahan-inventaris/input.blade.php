@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
-      	<h1>Laporan Inventaris</h1>
+      	<h1>Laporan Pemindahan Inventaris</h1>
     </div>
 
     @if ($errors->any())
@@ -25,7 +25,7 @@
     @endif
 
     <div class="w-1/2 px-8 pt-8 pb-2 relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border">
-        <form action="/laporan-inventaris/result">
+        <form action="/laporan-pemindahan-inventaris/result">
             <div class="grid grid-cols-8 gap-4 items-center mb-4">
                 <label 
                 for="start_date" 
@@ -58,24 +58,6 @@
             </div>
             <div class="grid grid-cols-8 gap-4 items-center mb-4">
                 <label 
-                for="kondisi" 
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
-                    Kondisi
-                </label>
-                <div class="col-span-6">
-                    <select
-                    class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                    name="kondisi"
-                    id="kondisi"
-                    >
-                        <option value="">Select Kondisi</option>
-                        <option value="Normal" {{ old('kondisi') == 'Normal' ? 'selected' : '' }}>Normal</option>
-                        <option value="Rusak" {{ old('kondisi') == 'Rusak' ? 'selected' : '' }}>Rusak</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid grid-cols-8 gap-4 items-center mb-4">
-                <label 
                 for="status" 
                 class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Status
@@ -90,26 +72,6 @@
                         <option value="Approval 1" {{ old('status') == 'Approval 1' ? 'selected' : '' }}>Approval 1</option>
                         <option value="Approval 2" {{ old('status') == 'Approval 2' ? 'selected' : '' }}>Approval 2</option>
                         <option value="Pending Approval" {{ old('status') == 'Pending Approval' ? 'selected' : '' }}>Pending Approval</option>
-                        <option value="Pending Approval Pemindahan" {{ old('status') == 'Pending Approval Pemindahan' ? 'selected' : '' }}>Pending Approval Pemindahan</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid grid-cols-8 gap-4 items-center mb-4">
-                <label 
-                for="kategori" 
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
-                    Kategori
-                </label>
-                <div class="col-span-6">
-                    <select
-                    class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-                    name="kategori_id"
-                    id="kategori"
-                    >
-                        <option value="">Select Kategori</option>
-                        @foreach ($kategoriRecord as $kategori)
-                        <option value="{{ $kategori->kategori_id }}" {{ old('kategori_id') == $kategori->kategori_id ? 'selected' : '' }}>{{ $kategori->nama_kategori }}</option>
-                        @endforeach
                     </select>
                 </div>
             </div>
@@ -117,7 +79,7 @@
                 <label 
                 for="kantor" 
                 class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
-                    Kantor Penempatan
+                    Kantor Tujuan
                 </label>
                 <div class="col-span-6">
                     <select
@@ -144,9 +106,7 @@
 
     <script type="text/javascript">	
         $(document).ready(function() {
-            $('#kondisi').select2();
             $('#kantor').select2();
-            $('#kategori').select2();
             $('#status').select2();
         });
     </script>

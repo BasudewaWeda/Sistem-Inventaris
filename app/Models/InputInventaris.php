@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,6 +36,9 @@ class InputInventaris extends Model
         'approver_1',
         'approver_2',
         'status_input_inventaris',
+        'approval_1_date',
+        'approval_2_date',
+        'rejection_date',
         'creator_id',
     ];
 
@@ -100,9 +104,11 @@ class InputInventaris extends Model
         
         if ($currentStatus == 'Pending Approval' && $inputInventaris->approver_1 == $currentUser->user_id) {
             $inputInventaris->status_input_inventaris = 'Approval 1';
+            $inputInventaris->approval_1_date = Carbon::now();
         }
         elseif ($currentStatus == 'Approval 1' && $inputInventaris->approver_2 == $currentUser->user_id) {
             $inputInventaris->status_input_inventaris = 'Approval 2';
+            $inputInventaris->approval_2_date = Carbon::now();
         }
 
         $inputInventaris->save();
@@ -111,6 +117,7 @@ class InputInventaris extends Model
     static public function rejectInputInventaris(self $inputInventaris, string $alasanRejection) {
         $inputInventaris->status_input_inventaris = 'Rejected';
         $inputInventaris->alasan_rejection = $alasanRejection;
+        $inputInventaris->rejection_date = Carbon::now();
 
         $inputInventaris->save();
     }

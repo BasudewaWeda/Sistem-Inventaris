@@ -60,6 +60,9 @@ Route::get('/user-management/edit/{user:slug}', [UserController::class, 'showEdi
 Route::post('/user-management/edit/{user:slug}', [UserController::class, 'editUser'])
     ->middleware(['auth', CheckPermission::class . ':edit-user']);
 
+Route::get('/user-management/reset-password/{user:slug}', [UserController::class, 'resetUserPassword'])
+    ->middleware(['auth', CheckPermission::class . ':edit-user']);
+
 Route::delete('/user-management/delete/{user:slug}', [UserController::class, 'deleteUser'])
     ->middleware(['auth', CheckPermission::class . ':delete-user']);
 
@@ -110,6 +113,9 @@ Route::get('/kantor-management/edit/{kantor:slug}', [KantorController::class, 's
 Route::post('/kantor-management/edit/{kantor:slug}', [KantorController::class, 'editKantor'])
     ->middleware(['auth', CheckPermission::class . ':edit-kantor']);
 
+Route::delete('/kantor-management/delete/{kantor:slug}', [KantorController::class, 'deleteKantor'])
+    ->middleware(['auth', CheckPermission::class . ':delete-kantor']);
+
 Route::get('/kantor-management/api/lantai/kantor/{id}', [KantorController::class, 'getLantaiByKantor']);
 
 Route::get('/kantor-management/api/ruangan/lantai/{id}', [KantorController::class, 'getRuanganByLantai']);
@@ -159,6 +165,9 @@ Route::get('/approval-pemindahan-inventaris/{pemindahanInventaris:pemindahan_inv
 Route::post('/approval-pemindahan-inventaris/{pemindahanInventaris:pemindahan_inventaris_id}/approve', [InventarisController::class, 'approvePemindahanInventaris'])
     ->middleware(['auth', CheckPermission::class . ':approval-pemindahan-inventaris-1,approval-pemindahan-inventaris-2']);
 
+Route::post('/approval-pemindahan-inventaris/{pemindahanInventaris:pemindahan_inventaris_id}/reject', [InventarisController::class, 'rejectPemindahanInventaris'])
+    ->middleware(['auth', CheckPermission::class . ':approval-pemindahan-inventaris-1,approval-pemindahan-inventaris-2']);
+
 Route::get('/inventaris-management/download/{filename}', [InventarisController::class, 'downloadQrCodeInventaris'])
     ->middleware(['auth', CheckPermission::class . ':view-inventaris']);
     
@@ -178,7 +187,23 @@ Route::get('/laporan-inventaris', [InventarisController::class, 'inputLaporanInv
 Route::get('/laporan-inventaris/result', [InventarisController::class, 'laporanInventaris'])
     ->middleware(['auth', CheckPermission::class . ':laporan-inventaris']);
 
+Route::get('/laporan-inventaris/download', [InventarisController::class, 'downloadLaporanInventaris'])
+    ->middleware(['auth', CheckPermission::class . ':laporan-inventaris']);
+
 // Laporan Inventaris
+
+// Laporan Pemindahan Inventaris
+
+Route::get('/laporan-pemindahan-inventaris', [InventarisController::class, 'inputLaporanPemindahanInventaris'])
+    ->middleware(['auth', CheckPermission::class . ':laporan-pemindahan-inventaris']);
+
+Route::get('/laporan-pemindahan-inventaris/result', [InventarisController::class, 'laporanPemindahanInventaris'])
+    ->middleware(['auth', CheckPermission::class . ':laporan-pemindahan-inventaris']);
+
+Route::get('/laporan-pemindahan-inventaris/download', [InventarisController::class, 'downloadLaporanPemindahanInventaris'])
+    ->middleware(['auth', CheckPermission::class . ':laporan-pemindahan-inventaris']);
+
+// Laporan Pemindahan Inventaris
 
 // Kategori Management
 
@@ -201,5 +226,17 @@ Route::delete('/kategori-management/delete/{kategori:slug}', [KategoriController
     ->middleware(['auth', CheckPermission::class . ':delete-kategori']);
 
 // Kategori Management
+
+// Forget reset password
+
+Route::get('/forget-password', [ProfileController::class, 'showForgotPasswordForm']);
+
+Route::post('/forget-password', [ProfileController::class, 'forgotPassword']);
+
+Route::get('/reset-password', [ProfileController::class, 'showResetPasswordForm']);
+
+Route::post('/reset-password', [ProfileController::class, 'resetPassword']);
+
+// Forget reset password
 
 require __DIR__.'/auth.php';

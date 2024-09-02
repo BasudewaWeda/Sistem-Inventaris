@@ -53,6 +53,7 @@
                 type="text" 
                 placeholder="001"
                 pattern="\d{3}"
+                title="Kode kantor merupakan angka 3 digit"
                 maxlength="3" 
                 required
                 id="kode_kantor"
@@ -70,7 +71,8 @@
                 <input 
                 type="text" 
                 pattern="0\d{9,12}"
-                maxlength="12"
+                title="Nomor telepon harus dimulai dengan '0', diikuti oleh 9 hingga 12 digit angka."
+                maxlength="13"
                 placeholder="036123456789"
                 required
                 id="nomor_telepon"
@@ -127,6 +129,13 @@
                     id="kabupaten"
                     >
                         <option value="">Select Kabupaten</option>
+                        @if (old('provinsi_id'))
+                        @foreach ($kabupatenRecord as $kabupaten)
+                        @if ($kabupaten->provinsi->provinsi_id == old('provinsi_id'))
+                        <option value="{{ $kabupaten->kabupaten_id }}" @if($kabupaten->kabupaten_id == old('kabupaten_id')) selected @endif>{{ $kabupaten->nama_kabupaten }}</option>
+                        @endif
+                        @endforeach
+                        @endif
                     </select>
                 </div>
             </div>
@@ -198,7 +207,7 @@
         
             lantaiGroup.innerHTML = `
                 <div class="flex gap-2">
-                    <input placeholder="Nama Lantai" type="text" name="lantai[${lantaiIndex}][nama_lantai]" class="flex-1 mb-2 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"/>
+                    <input placeholder="Nama Lantai" required type="text" name="lantai[${lantaiIndex}][nama_lantai]" class="flex-1 mb-2 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"/>
                     <button type="button" onclick="removeLantai(${lantaiIndex})" class="p-2 mb-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">Remove Lantai</button>
                     </div>
                 <div class="ruangan-group" id="ruangan-group-${lantaiIndex}">
@@ -219,8 +228,8 @@
             ruanganDiv.className = 'ruangan flex gap-2 ml-2';
         
             ruanganDiv.innerHTML = `
-                <input type="text" placeholder="Nama Ruangan" name="lantai[${lantaiIndex}][ruangan][${ruanganIndex}][nama_ruangan]" class="flex-1 mb-2 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"/>
-                <input type="text" placeholder="Detail Ruangan" name="lantai[${lantaiIndex}][ruangan][${ruanganIndex}][detail_ruangan]" class="flex-1 mb-2 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"/>
+                <input type="text" required placeholder="Nama Ruangan" name="lantai[${lantaiIndex}][ruangan][${ruanganIndex}][nama_ruangan]" class="flex-1 mb-2 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"/>
+                <input type="text" required placeholder="Detail Ruangan" name="lantai[${lantaiIndex}][ruangan][${ruanganIndex}][detail_ruangan]" class="flex-1 mb-2 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"/>
                 <button type="button" onclick="removeRuangan(${lantaiIndex}, ${ruanganIndex})" class="p-2 mb-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">Remove Ruangan</button>
             `;
         

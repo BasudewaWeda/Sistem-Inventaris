@@ -25,7 +25,8 @@ class AddPemindahanInventarisRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul_pemindahan_inventaris' => 'required|string|max:50',
+            'judul_pemindahan_inventaris' => 'required|string|max:255',
+            'inventaris_ids' => 'required|string',
             'kantor_id_tujuan' => 'required|numeric|exists:kantor,kantor_id',
             'lantai_id_tujuan' => [
                 'required',
@@ -73,6 +74,16 @@ class AddPemindahanInventarisRequest extends FormRequest
                     }
                 }
             ]
+        ];
+    }
+
+    public function messages() {
+        return [
+            'kantor_id_tujuan.required' => 'Select Kantor',
+            'lantai_id_tujuan.required' => 'Select Lantai',
+            'ruangan_id_tujuan.required' => 'Select Ruangan',
+            'approver_1.required' => 'Select Approver 1',
+            'approver_2.required' => 'Select Approver 2',
         ];
     }
 }

@@ -137,7 +137,7 @@
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inventaris->tanggal_pembelian }}
+						{{ $inventaris->tanggal_pembelian->format('Y-m-d') }}
 					  	</p>
 					</td>
 					<td class="p-4">

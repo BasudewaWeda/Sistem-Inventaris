@@ -19,9 +19,14 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('user_phone_number');
+            $table->string('status')->default('active');
+            $table->integer('failed_attempts')->default(0);
             $table->integer('current_role_id');
             $table->unsignedBigInteger('creator_id')->nullable();
             $table->unsignedBigInteger('editor_id')->nullable();
+            $table->string('forget_code')->nullable();
+            $table->date('forget_expire')->nullable();
+            $table->string('has_changed_password')->default(0);
             $table->rememberToken();
             $table->timestamps();
 

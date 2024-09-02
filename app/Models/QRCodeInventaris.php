@@ -21,7 +21,7 @@ class QRCodeInventaris extends Model
     ];
 
     static public function createQRCode(Inventaris $inventaris) {
-        $qrCode = new QrCode(url('/inventaris-management/kondisi/' . $inventaris->inventaris_id));
+        $qrCode = new QrCode(url('/inventaris-management/inventaris/' . $inventaris->inventaris_id));
         $qrCode->setSize(300);
 
         $pngWriter = new PngWriter();

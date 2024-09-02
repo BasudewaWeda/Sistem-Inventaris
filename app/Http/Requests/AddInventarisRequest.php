@@ -25,8 +25,8 @@ class AddInventarisRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul_input_inventaris' => 'required|string|max:50',
-            'nama_inventaris' => 'required|string|max:50',
+            'judul_input_inventaris' => 'required|string|max:255',
+            'nama_inventaris' => 'required|string|max:255',
             'jumlah_inventaris' => 'required|numeric',
             'harga_inventaris' => [
                 'required',
@@ -34,7 +34,7 @@ class AddInventarisRequest extends FormRequest
                 'string'
             ],
             'kategori_id' =>'required|numeric|exists:kategori,kategori_id',
-            'tanggal_pembelian' => 'required|date',
+            'tanggal_pembelian' => 'required|date|before_or_equal:today',
             'tahun_penyusutan' => 'required|numeric',
             'kantor_id' => 'required|numeric|exists:kantor,kantor_id',
             'lantai_id' => [
@@ -83,6 +83,18 @@ class AddInventarisRequest extends FormRequest
                     }
                 }
             ]
+        ];
+    }
+
+    public function messages() {
+        return [
+            'kategori_id.required' => 'Select a Kategori',
+            'kantor_id.required' => 'Select a Kantor',
+            'lantai_id.required' => 'Select a Lantai',
+            'ruangan_id.required' => 'Select a Ruangan',
+            'approver_1.required' => 'Select Approver 1',
+            'approver_2.required' => 'Select Approver 2',
+            'tanggal_pembelian.before_or_equal' => 'Tanggal pembelian cannot be later than today',
         ];
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id('role_id');
-            $table->string('role_name');
+            $table->string('role_name')->unique();
             $table->string('slug');
             $table->unsignedBigInteger('creator_id')->nullable();
             $table->unsignedBigInteger('editor_id')->nullable();
@@ -110,11 +110,11 @@ return new class extends Migration
 
         Schema::create('kantor', function (Blueprint $table) {
             $table->id('kantor_id');
-            $table->string('kode_kantor', 3);
-            $table->string('nama_kantor');
+            $table->string('kode_kantor', 3)->unique();
+            $table->string('nama_kantor')->unique();
             $table->string('slug');
             $table->string('sequence_kantor')->default('0001');
-            $table->string('nomor_telepon_kantor');
+            $table->string('nomor_telepon_kantor')->unique();
             $table->string('alamat_kantor');
             $table->unsignedBigInteger('provinsi_id');
             $table->unsignedBigInteger('kabupaten_id');
@@ -204,7 +204,7 @@ return new class extends Migration
 
         Schema::create('kategori', function (Blueprint $table) {
             $table->id('kategori_id');
-            $table->string('nama_kategori');
+            $table->string('nama_kategori')->unique();
             $table->string('slug');
             $table->unsignedBigInteger('creator_id')->nullable();
             $table->unsignedBigInteger('editor_id')->nullable();
@@ -246,7 +246,9 @@ return new class extends Migration
             $table->unsignedBigInteger('lantai_id');
             $table->unsignedBigInteger('ruangan_id');
             $table->unsignedBigInteger('kategori_id');
-
+            $table->date('approval_1_date')->nullable();
+            $table->date('approval_2_date')->nullable();
+            $table->date('rejection_date')->nullable();
             $table->timestamps();
 
             $table->foreign('creator_id')
@@ -309,6 +311,8 @@ return new class extends Migration
             $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('approver_1');
             $table->unsignedBigInteger('approver_2');
+            $table->date('approval_1_date')->nullable();
+            $table->date('approval_2_date')->nullable();
             $table->unsignedBigInteger('input_inventaris_id')->nullable();
             $table->timestamps();
 
@@ -378,6 +382,9 @@ return new class extends Migration
             $table->unsignedBigInteger('kantor_id_tujuan');
             $table->unsignedBigInteger('lantai_id_tujuan');
             $table->unsignedBigInteger('ruangan_id_tujuan');
+            $table->date('approval_1_date')->nullable();
+            $table->date('approval_2_date')->nullable();
+            $table->date('rejection_date')->nullable();
 
             $table->foreign('creator_id')
                 ->references('user_id')

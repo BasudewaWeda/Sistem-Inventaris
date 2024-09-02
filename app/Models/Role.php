@@ -28,6 +28,20 @@ class Role extends Model
         'slug',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($role) {
+            // Get all users with this role as their current role
+            $usersWithCurrentRole = User::where('current_role_id', $role->role_id)->get();
+
+            foreach ($usersWithCurrentRole as $user) {
+                $user->reassignCurrentRole();
+            }
+        });
+    }
+
     static public function getRoles() {
         return self::with(['creator', 'editor'])->orderByDesc('updated_at')->paginate(10);
     }
@@ -64,6 +78,8 @@ class Role extends Model
     
     static public function checkPermission($permission_name): bool {
         $role = Auth::user()->currentRole;
+
+        if ($role == null) return false;
 
         if ($role->permissions->contains('permission_name', $permission_name)) return true;
 

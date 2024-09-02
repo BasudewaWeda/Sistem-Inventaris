@@ -122,7 +122,7 @@
             <div class="flex gap-2 justify-between w-full">
                 <div class="flex">
                     <a 
-                        href="/approval-inventaris" 
+                        href={{ url()->previous() ?? '/approval-pemindahan-inventaris' }} 
                         data-ripple-dark="true"
                         class="p-2 bg-blue-gray-100 text-blue-gray-700 transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
                         Back

@@ -3,6 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Mail\ForgotUserPassword;
+use App\Mail\SendUserPassword;
+use App\Mail\UserResetPassword;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -14,6 +18,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -34,6 +40,7 @@ class User extends Authenticatable
         'email',
         'user_phone_number',
         'password',
+        'status',
         'current_role_id',
         'creator_id',
         'editor_id',
@@ -90,7 +97,7 @@ class User extends Authenticatable
         })->get();
     }
 
-    // Getting users with permission 'approval-inventaris-1'
+    // Getting users with permission 'approval-pemindahan-inventaris-1'
     static public function getPemindahanFirstApprovers() {
         return self::whereHas('roles', function (Builder $query) {
             $query->whereHas('permissions', function (Builder $query2) {
@@ -99,7 +106,7 @@ class User extends Authenticatable
         })->get();
     }
 
-    // Getting users with permission 'approval-inventaris-2'
+    // Getting users with permission 'approval-inventaris-pemindahan-2'
     static public function getPemindahanSecondApprovers() {
         return self::whereHas('roles', function (Builder $query) {
             $query->whereHas('permissions', function (Builder $query2) {
@@ -169,19 +176,23 @@ class User extends Authenticatable
 
     static public function createUser(array $data) {
         $creator_id = self::getCurrentUser()->user_id;
+        $generatedPassword = self::generateRandomString();
 
         $user = self::create([
             'user_name' => trim($data['user_name']),
             'slug' => Str::slug(trim($data['user_name'])),
             'email' => trim($data['email']),
             'user_phone_number' => trim($data['user_phone_number']),
-            'password' => Hash::make(self::generateRandomString()),
+            'password' => Hash::make($generatedPassword),
+            'status' => 'active',
             'current_role_id' => $data['role_ids'][0],
             'creator_id' => $creator_id,
             'editor_id' => $creator_id,
         ]);
 
         $user->roles()->attach($data['role_ids']);
+
+        Mail::to($data['email'])->send(new SendUserPassword(trim($data['user_name']), trim($data['email']), $generatedPassword));
     }
 
     static public function updateUser(self $user, array $data) {
@@ -191,6 +202,7 @@ class User extends Authenticatable
         $user->slug = Str::slug(trim($data['user_name']));
         $user->email = trim($data['email']);
         $user->user_phone_number = trim($data['user_phone_number']);
+        $user->status = trim($data['status']);
 
         $user->editor_id = self::getCurrentUser()->user_id;
 
@@ -208,8 +220,64 @@ class User extends Authenticatable
 
     static public function updatePassword(self $user, $data) {
         $user->password = Hash::make($data['new_password']);
+        $user->has_changed_password = 1;
 
         $user->save();
+    }
+
+    static public function resetPassword(self $user) { // admin resets password
+        $forgetCode = self::generateRandomString();
+
+        $user->forget_code = Hash::make($forgetCode);
+        $user->forget_expire = Carbon::now()->addDays(3);
+        $user->password = Hash::make(self::generateRandomString());
+
+        $user->save();
+
+        Mail::to($user->email)->send(new UserResetPassword($user->user_name, $forgetCode));
+    }
+
+    static public function forgotPassword($email) {
+        $user = self::where('email', $email)->first();
+
+        $forgetCode = self::generateRandomString();
+
+        $user->forget_code = Hash::make($forgetCode);
+        $user->forget_expire = Carbon::now()->addDays(3);
+
+        $user->save();
+
+        Mail::to($email)->send(new ForgotUserPassword($user->user_name, $forgetCode));
+    }
+
+    static public function resetForgotPassword(array $data) {
+        $user = User::where('email', $data['email'])->first();
+        
+        if (!Hash::check($data['forget_code'], $user->forget_code)) {
+            return ['status' => 'fail', 'message' => 'Invalid reset code'];
+        }
+
+        if (Carbon::now()->greaterThan(($user->forget_expire))) {
+            return ['status' => 'fail', 'message' => 'Forget code expired'];
+        }
+
+        $user->password = Hash::make($data['new_password']);
+        $user->forget_code = null;
+        $user->forget_expire = null;
+
+        $user->save();
+    }
+
+    public function reassignCurrentRole()
+    {
+        $newRole = $this->roles()->first();
+        if ($newRole) {
+            $this->current_role_id = $newRole->role_id;
+            $this->save();
+        } else {
+            $this->current_role_id = null;
+            $this->save();
+        }
     }
 
     public function roles(): BelongsToMany {

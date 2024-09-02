@@ -27,6 +27,10 @@ class Kabupaten extends Model
     static public function getKabupatenByProvinsi($provinsiId) {
         return self::where('provinsi_id', $provinsiId)->get();
     }
+
+    static public function getKabupatenRecords() {
+        return self::with(['provinsi'])->get();
+    }
      
     public function provinsi(): BelongsTo {
        return $this->belongsTo(Provinsi::class, 'provinsi_id');

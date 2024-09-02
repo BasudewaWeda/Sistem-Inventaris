@@ -75,7 +75,7 @@
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $inventaris->tanggal_pembelian }}
+						{{ $inventaris->tanggal_pembelian->format('Y-m-d') }}
 					  	</p>
 					</td>
 					<td class="p-4">
@@ -113,12 +113,32 @@
         {{ $laporanRecord->links() }}
 	</div>
 
-    <div class="flex ml-8">
+    <div class="flex mx-8">
         <a 
-            href="{{ url()->previous() ?? '/inventaris-management' }}" 
+            href="/laporan-inventaris" 
             data-ripple-dark="true"
             class="p-2 bg-blue-gray-100 text-blue-gray-700 transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 ">
             Back
         </a>
+        <form action="/laporan-inventaris/download" class="ml-auto">
+            <input type="hidden" value="{{ $request['start_date'] }}" name="start_date">
+            <input type="hidden" value="{{ $request['end_date'] }}" name="end_date">
+            @if (!empty($request['kategori_id']))
+            <input type="hidden" value="{{ $request['kategori_id'] }}" name="kategori_id">
+            @endif
+            @if (!empty($request['status']))
+            <input type="hidden" value="{{ $request['status'] }}" name="status">
+            @endif
+            @if (!empty($request['kondisi']))
+            <input type="hidden" value="{{ $request['kondisi'] }}" name="kondisi">
+            @endif
+            <div data-ripple-dark="true" class="w-fit">
+                <input 
+                type="submit" 
+                value="Download Laporan"
+                class="p-2 bg-blue-gray-700 text-white transition-all rounded-lg outline-none font-semibold text-center hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 hover:cursor-pointer focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900 "
+                >
+            </div>
+        </form>
     </div>
 </x-app-layout>

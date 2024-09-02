@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Kabupaten;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EditKantorRequest extends FormRequest
@@ -30,7 +32,21 @@ class EditKantorRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('kantor', 'nama_kantor')->ignore($kantorId, 'kantor_id')
+                function ($attribute, $value, $fail) {
+                    $slug = Str::slug($value);
+
+                    $kantor = $this->route('kantor');
+        
+                    // Query to check if the slug already exists, excluding the current kategori ID
+                    $exists = DB::table('kantor')
+                        ->where('slug', $slug)
+                        ->where('kantor_id', '!=', $kantor->kantor_id)
+                        ->exists();
+        
+                    if ($exists) {
+                        $fail('Kantor name already in system');
+                    }
+                },
             ],
             'kode_kantor' => [
                 'required',
@@ -38,7 +54,12 @@ class EditKantorRequest extends FormRequest
                 'digits:3',
                 Rule::unique('kantor', 'kode_kantor')->ignore($kantorId, 'kantor_id')
             ],
-            'nomor_telepon_kantor' => 'required|numeric|digits_between:9,12',
+            'nomor_telepon_kantor' => [
+                'required',
+                'numeric',
+                'digits_between:10,13',
+                Rule::unique('kantor', 'nomor_telepon_kantor')->ignore($kantorId, 'kantor_id')
+            ],
             'alamat_kantor' => 'required|string|max:255',
             'provinsi_id' => 'required|numeric|exists:provinsi,provinsi_id',
             'kabupaten_id' => [
@@ -59,6 +80,20 @@ class EditKantorRequest extends FormRequest
             'lantai.*.ruangan.*.ruangan_id' => 'nullable|exists:ruangan,ruangan_id',
             'lantai.*.ruangan.*.nama_ruangan' => 'required|string|max:255',
             'lantai.*.ruangan.*.detail_ruangan' => 'required|string|max:255',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'kode_kantor.unique' => 'Kode kantor already in system',
+            'provinsi_id.required' => 'Please select Provinsi',
+            'kabupaten_id.required' => 'Please select Kabupaten',
+            'lantai.*.nama_lantai.required' => 'Nama lantai field is required',
+            'lantai.*.ruangan.*.nama_ruangan.required' => 'Nama ruangan field is required',
+            'lantai.*.ruangan.*.detail_ruangan.required' => 'Detail ruangan field is required',
+            'lantai.*.nama_lantai.max' => 'Nama lantai field cannot be more than 255 characters',
+            'lantai.*.ruangan.*.nama_ruangan.max' => 'Nama ruangan field cannot be more than 255 characters',
+            'lantai.*.ruangan.*.detail_ruangan.max' => 'Detail ruangan field cannot be more than 255 characters',
         ];
     }
 }

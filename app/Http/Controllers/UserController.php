@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
@@ -28,10 +30,29 @@ class UserController extends Controller
 
     public function addUser(Request $request) {
         $request->validate([
-            'email' => 'required|email|unique:users',
-            'user_name' => 'required|string|max:40',
-            'user_phone_number' => 'required|string|max:12',
+            'email' => 'required|email|unique:users|max:255',
+            'user_name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $slug = Str::slug($value);
+        
+                    // Query to check if the slug already exists
+                    $exists = DB::table('users')
+                        ->where('slug', $slug)
+                        ->exists();
+        
+                    if ($exists) {
+                        $fail('User name already taken');
+                    }
+                },
+            ],
+            'user_phone_number' => 'required|string|max:13|min:10|regex:/^08[1-9][0-9]{7,10}$/|unique:users',
             'role_ids' => 'required|array|min:1',
+        ], [
+            'role_ids.required' => 'Select at least one role',
+            'role_ids.min' => 'Select at least one role'
         ]);
 
         User::createUser($request->all());
@@ -55,11 +76,44 @@ class UserController extends Controller
             'email' => [
                 'required',
                 'email',
+                'max:255',
                 Rule::unique('users')->ignore($user->user_id, 'user_id'),
             ],
-            'user_name' => 'required|string|max:40',
-            'user_phone_number' => 'required|string|max:12',
+            'user_name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($user) {
+                    $slug = Str::slug($value);
+        
+                    // Query to check if the slug already exists, excluding the current user ID
+                    $exists = DB::table('users')
+                        ->where('slug', $slug)
+                        ->where(function ($query) use ($user) {
+                            if ($user) {
+                                $query->where('user_id', '!=', $user->user_id);
+                            }
+                        })
+                        ->exists();
+        
+                    if ($exists) {
+                        $fail('User name already taken');
+                    }
+                },
+            ],    
+            'user_phone_number' => [
+                'required',
+                'string',
+                'max:13',
+                'min:10',
+                'regex:/^08[1-9][0-9]{7,10}$/',
+                Rule::unique('users')->ignore($user->user_id, 'user_id'),
+            ],
             'role_ids' => 'required|array|min:1',
+            'status' => 'required|string|in:active,inactive'
+        ], [
+            'role_ids.required' => 'Select at least one role',
+            'role_ids.min' => 'Select at least one role'
         ]);
 
         try {
@@ -80,5 +134,13 @@ class UserController extends Controller
         Alert::toast('User deleted');
 
         return redirect('/user-management')->with('success', 'User deleted');
+    }
+
+    public function resetUserPassword(User $user) {
+        User::resetPassword($user);
+
+        Alert::toast('User password reset');
+
+        return redirect('/user-management')->with('success', 'User password reset');
     }
 }

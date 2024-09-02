@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InventarisExport;
+use App\Exports\PemindahanInventarisExport;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Kantor;
@@ -18,6 +20,8 @@ use App\Http\Requests\AddPemindahanInventarisRequest;
 use App\Models\PemindahanInventaris;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class InventarisController extends Controller
 {
@@ -176,6 +180,8 @@ class InventarisController extends Controller
     }
 
     public function rejectPemindahanInventaris(PemindahanInventaris $pemindahanInventaris, Request $request) {
+        $request->validate(['alasan_rejection' => 'required|string|max:255']);
+
         PemindahanInventaris::rejectPemindahanInventaris($pemindahanInventaris, $request->all()['alasan_rejection']);
 
         Inventaris::rejectPemindahanInventaris($pemindahanInventaris);
@@ -194,8 +200,22 @@ class InventarisController extends Controller
 
     public function laporanInventaris(Request $request) {
         $request = $request->validate([
-            'start_date' => 'required|date|before_or_equal:end_date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'start_date' => 'required|date|before_or_equal:end_date|before_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date',
+                'before_or_equal:today',
+                function ($attribute, $value, $fail) use ($request){
+                    $startDate = Carbon::parse($request->start_date);
+                    $endDate = Carbon::parse($value);
+    
+                    if ($startDate->diffInMonths($endDate) > 1) {
+                        $fail('The end date must be within 1 month of the start date');
+                    }
+                },
+            ],
             'kategori_id' => 'nullable|numeric|exists:kategori,kategori_id',
             'kantor_id' => 'nullable|numeric|exists:kantor,kantor_id',
             'status' => 'nullable|in:Approval 1,Approval 2,Pending Approval',
@@ -204,8 +224,47 @@ class InventarisController extends Controller
 
         $laporanRecord = Inventaris::getLaporanInventaris($request);
 
-        dd($laporanRecord->getCollection());
+        return view('laporan-inventaris.result', compact('laporanRecord', 'request'));
+    }
 
-        return view('laporan-inventaris.result', compact('laporanRecord'));
+    public function downloadLaporanInventaris(Request $request) {
+        return Excel::download(new InventarisExport($request->all()), 'laporan_inventaris-' . Carbon::now()->toDateString() . '.csv');
+    }
+
+    public function inputLaporanPemindahanInventaris() {
+        $kantorRecord = Kantor::getKantorRecords();
+
+        return view('laporan-pemindahan-inventaris.input', compact('kantorRecord'));
+    }
+
+    public function laporanPemindahanInventaris(Request $request) {
+        $request = $request->validate([
+            'start_date' => 'required|date|before_or_equal:end_date|before_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date',
+                'before_or_equal:today',
+                function ($attribute, $value, $fail) use ($request){
+                    $startDate = Carbon::parse($request->start_date);
+                    $endDate = Carbon::parse($value);
+    
+                    if ($startDate->diffInMonths($endDate) > 1) {
+                        $fail('The end date must be within 1 month of the start date');
+                    }
+                },
+            ],
+            'kantor_id' => 'nullable|numeric|exists:kantor,kantor_id',
+            'status' => 'nullable|in:Approval 1,Approval 2,Pending Approval',
+        ]);
+
+        $laporanRecord = PemindahanInventaris::getLaporanPemindahanInventaris($request);
+
+        return view('laporan-pemindahan-inventaris.result', compact('laporanRecord', 'request'));
+    }
+
+    public function downloadLaporanPemindahanInventaris(Request $request) {
+        return Excel::download(new PemindahanInventarisExport($request->all()), 'laporan_pemindahan_inventaris-' . Carbon::now()->toDateString() . '.csv');
     }
 }

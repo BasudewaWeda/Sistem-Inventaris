@@ -67,7 +67,8 @@
                 </label>
                 <input 
                 type="text" 
-                pattern="^08[1-9][0-9]{7,9}$"
+                pattern="^08[1-9][0-9]{7,10}$"
+                title="Nomor telepon harus dimulai dengan '08', diikuti oleh 8 hingga 11 digit angka."
                 placeholder="08123456789" 
                 required
                 id="user_phone_number"

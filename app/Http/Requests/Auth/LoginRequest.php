@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use App\Rules\Recaptcha;
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -35,6 +36,15 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    public function messages() {
+        return [
+            'email.required' => 'The email field is required',
+            'email.email' => 'Please provide a valid email address',
+            'password.required' => 'The password field is required',
+            'g-recaptcha-response.required' => 'Please complete the CAPTCHA',
+        ];
+    }
+
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -44,13 +54,33 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $user = User::where('email', $this->email)->first();
 
+        if (!$user || $user->status !== 'active') {
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been temporarily blocked due to multiple failed login attempts. Please contact administrator.',
+            ]);
+        }
+
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+
+            $user->increment('failed_attempts');
+
+            if ($user->failed_attempts >= 3) {
+                $user->update([
+                    'status' => 'inactive',
+                    'failed_attempts' => 0,
+                ]);
+            }
+            
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
+
+            RateLimiter::hit($this->throttleKey());
         }
+
+        $user->update(['failed_attempts' => 0]);
 
         RateLimiter::clear($this->throttleKey());
     }

@@ -37,7 +37,14 @@ class Inventaris extends Model
         'approver_1',
         'approver_2',
         'creator_id',
+        'approval_1_date',
+        'approval_2_date',
         'input_inventaris_id',
+    ];
+
+    protected $casts = [
+        'tanggal_pembelian' => 'date',
+        'created_at' => 'datetime',
     ];
 
     static public function getInventarisByIds($ids) {
@@ -56,10 +63,16 @@ class Inventaris extends Model
     }
 
     static public function getLaporanInventaris(array $request) {
-        $query = self::with(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover']);
+        $query = self::with(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover'])
+            ->whereDate('created_at', '>=', $request['start_date'])
+            ->whereDate('created_at', '<=', $request['end_date']);
 
         if (!empty($request['kategori_id'])) {
             $query->where('kategori_id', $request['kategori_id']);
+        }
+
+        if (!empty($request['kantor_id'])) {
+            $query->where('kantor_id', $request['kantor_id']);
         }
 
         if (!empty($request['status'])) {
@@ -152,6 +165,7 @@ class Inventaris extends Model
             $inventarisCollection->each(function ($inventaris) use ($statusInputInventaris, $kodeKantor, &$sequenceKantor) {
                 $inventaris->nomor_inventaris = "INV/" . $kodeKantor . "/" . date('m') . "/" . date('y') . "/" . str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
                 $inventaris->status_inventaris = $statusInputInventaris;
+                $inventaris->approval_2_date = Carbon::now();
 
                 $qrCode = QRCodeInventaris::createQRCode($inventaris);
                 $inventaris->qrcode_id = $qrCode->qrcode_id;
@@ -169,7 +183,7 @@ class Inventaris extends Model
             $currentTime = Carbon::now();
 
             self::whereIn('inventaris_id', $inventarisIds)
-                ->update(['status_inventaris' => $statusInputInventaris, 'updated_at' => $currentTime]);
+                ->update(['status_inventaris' => $statusInputInventaris, 'updated_at' => $currentTime, 'approval_1_date' => $currentTime]);
         }
     }
 
@@ -185,27 +199,35 @@ class Inventaris extends Model
 
         if ($statusPemindahanInventaris == "Approval 2") {
             $kantorTujuan = $pemindahanInventaris->kantorTujuan;
-            $kodeKantor = $kantorTujuan->kode_kantor;
-            $sequenceKantor = (int)$kantorTujuan->sequence_kantor;
 
             $idKantorTujuan = $kantorTujuan->kantor_id;
             $idLantaiTujuan = $pemindahanInventaris->lantaiTujuan->lantai_id;
             $idRuanganTujuan = $pemindahanInventaris->ruanganTujuan->ruangan_id;
+
+            $inventarisIds = $inventarisCollection->pluck('inventaris_id');
+
+            self::whereIn('inventaris_id', $inventarisIds)->update([
+                'status_inventaris' => $statusPemindahanInventaris,
+                'kantor_id' => $idKantorTujuan,
+                'lantai_id' => $idLantaiTujuan,
+                'ruangan_id' => $idRuanganTujuan,
+                'updated_at' => now()
+            ]);
     
-            $inventarisCollection->each(function ($inventaris) use ($statusPemindahanInventaris, $kodeKantor, &$sequenceKantor, $idKantorTujuan, $idLantaiTujuan, $idRuanganTujuan) {
-                $inventaris->nomor_inventaris = "INV/" . $kodeKantor . "/" . date('m') . "/" . date('y') . "/" . str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
-                $inventaris->status_inventaris = $statusPemindahanInventaris;
-                $inventaris->kantor_id = $idKantorTujuan;
-                $inventaris->lantai_id = $idLantaiTujuan;
-                $inventaris->ruangan_id = $idRuanganTujuan;
+            // $inventarisCollection->each(function ($inventaris) use ($statusPemindahanInventaris, $kodeKantor, &$sequenceKantor, $idKantorTujuan, $idLantaiTujuan, $idRuanganTujuan) {
+            //     $inventaris->nomor_inventaris = "INV/" . $kodeKantor . "/" . date('m') . "/" . date('y') . "/" . str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
+            //     $inventaris->status_inventaris = $statusPemindahanInventaris;
+            //     $inventaris->kantor_id = $idKantorTujuan;
+            //     $inventaris->lantai_id = $idLantaiTujuan;
+            //     $inventaris->ruangan_id = $idRuanganTujuan;
     
-                $sequenceKantor++;
+            //     $sequenceKantor++;
     
-                $inventaris->save();
-            });
+            //     $inventaris->save();
+            // });
     
-            $pemindahanInventaris->kantorTujuan->sequence_kantor = str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
-            $pemindahanInventaris->kantorTujuan->save();
+            // $pemindahanInventaris->kantorTujuan->sequence_kantor = str_pad($sequenceKantor, 4, '0', STR_PAD_LEFT);
+            // $pemindahanInventaris->kantorTujuan->save();
         }
         else {
             $inventarisIds = $inventarisCollection->pluck('inventaris_id');

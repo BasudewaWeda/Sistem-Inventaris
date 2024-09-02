@@ -93,7 +93,7 @@
 					</td>
 					<td class="p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-						{{ $user->currentRole->role_name }}
+						{{ $user->currentRole->role_name ?? '' }}
 					  	</p>
 					</td>
 					<td class="p-4">

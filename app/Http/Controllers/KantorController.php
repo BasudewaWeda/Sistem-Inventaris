@@ -34,10 +34,6 @@ class KantorController extends Controller
 
         $kantorRecords = Kantor::getDetailedKantorRecords();
 
-        $title = 'Delete Kantor';
-        $text = "Are you sure you want to delete kantor?";
-        confirmDelete($title, $text);
-
         return view('kantor.index', compact('addKantor', 'editKantor', 'deleteKantor', 'kantorRecords'));
     }
 
@@ -58,13 +54,14 @@ class KantorController extends Controller
 
     public function showAddKantor() {
         $provinsiRecord = Provinsi::getProvinsiRecords();
+        $kabupatenRecord = Kabupaten::getKabupatenRecords();
 
-        return view('kantor.add', compact('provinsiRecord'));
+        return view('kantor.add', compact('provinsiRecord', 'kabupatenRecord'));
     }
 
     public function addKantor(AddKantorRequest $request) {
         $request = $request->validated();
-        $data = $request['lantai'];
+        $data = $request['lantai'] ?? [];
 
         $kantor = Kantor::createKantor($request);
 
@@ -95,7 +92,7 @@ class KantorController extends Controller
 
         Kantor::updateKantor($kantor, $request);
 
-        $lantaiData = $request['lantai'];
+        $lantaiData = $request['lantai'] ?? [];
         $lantaiIds = array();
         $ruanganIds = array();
         
@@ -133,5 +130,13 @@ class KantorController extends Controller
         Alert::toast('Kantor edited');
 
         return redirect('/kantor-management')->with('success', 'Kantor edited');
+    }
+
+    public function deleteKantor(Kantor $kantor) {
+        $kantor->delete();
+
+        Alert::toast('Kantor deleted');
+
+        return redirect('/kantor-management')->with('success', 'Kantor deleted');        
     }
 }

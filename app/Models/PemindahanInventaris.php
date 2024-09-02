@@ -102,9 +102,11 @@ class PemindahanInventaris extends Model
         
         if ($currentStatus == 'Pending Approval' && $pemindahanInventaris->approver_1 == $currentUser->user_id) {
             $pemindahanInventaris->status_pemindahan_inventaris = 'Approval 1';
+            $pemindahanInventaris->approval_1_date = Carbon::now();
         }
         elseif ($currentStatus == 'Approval 1' && $pemindahanInventaris->approver_2 == $currentUser->user_id) {
             $pemindahanInventaris->status_pemindahan_inventaris = 'Approval 2';
+            $pemindahanInventaris->approval_2_date = Carbon::now();
         }
 
         $pemindahanInventaris->save();
@@ -113,8 +115,25 @@ class PemindahanInventaris extends Model
     static public function rejectPemindahanInventaris(self $pemindahanInventaris, string $alasanRejection) {
         $pemindahanInventaris->status_pemindahan_inventaris = 'Rejected';
         $pemindahanInventaris->alasan_rejection = $alasanRejection;
+        $pemindahanInventaris->rejection_date = Carbon::now();
 
         $pemindahanInventaris->save();
+    }
+
+    static public function getLaporanPemindahanInventaris(array $request) {
+        $query = self::with(['kantorTujuan', 'lantaiTujuan', 'ruanganTujuan', 'creator', 'firstApprover', 'secondApprover', 'inventaris'])
+            ->whereDate('created_at', '>=', $request['start_date'])
+            ->whereDate('created_at', '<=', $request['end_date']);
+
+        if (!empty($request['kantor_id'])) {
+            $query->where('kantor_id', $request['kantor_id']);
+        }
+
+        if (!empty($request['status'])) {
+            $query->where('status_inventaris', $request['status']);
+        }
+
+        return $query->orderByDesc('created_at')->paginate(10)->withQueryString();
     }
 
     function scopeFilter(Builder $query, array $filters) : void {
