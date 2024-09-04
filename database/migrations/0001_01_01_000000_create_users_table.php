@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('forget_code')->nullable();
             $table->date('forget_expire')->nullable();
             $table->string('has_changed_password')->default(0);
+            $table->string('forget_code_request_amount')->default(0);
+            $table->date('forget_code_request_date')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

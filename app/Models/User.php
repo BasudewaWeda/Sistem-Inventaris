@@ -237,8 +237,10 @@ class User extends Authenticatable
         Mail::to($user->email)->send(new UserResetPassword($user->user_name, $forgetCode));
     }
 
-    static public function forgotPassword($email) {
-        $user = self::where('email', $email)->first();
+    static public function forgotPassword(self $user, $email, bool $sameDay) {
+        if (!$sameDay) $user->forget_code_request_amount = 0;
+        $user->forget_code_request_amount += 1;
+        $user->forget_code_request_date = Carbon::now();
 
         $forgetCode = self::generateRandomString();
 

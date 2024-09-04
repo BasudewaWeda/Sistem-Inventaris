@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
@@ -131,7 +132,21 @@ class ProfileController extends Controller
             'g-recaptcha-response.required' => 'Please complete the CAPTCHA',
         ]);
 
-        User::forgotPassword($request['email']);
+        $user = User::where('email', $request['email'])->first();
+        $sameDay = false;
+
+        if (!empty($user->forget_code_request_date)) {
+            $sameDay = Carbon::parse($user->forget_code_request_date)->isSameDay(Carbon::now());
+        }
+
+        if ($user->forget_code_request_amount >= 3 && $sameDay) {
+            throw ValidationException::withMessages([
+                'email' => 'You have reached the limit of 3 forget code requests for today. Please try again tomorrow.',
+            ]);
+        }
+        else {
+            User::forgotPassword($user, $request['email'], $sameDay);
+        }
 
         return redirect('/reset-password');
     }
