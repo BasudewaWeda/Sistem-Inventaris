@@ -43,7 +43,8 @@ class InventarisController extends Controller
     }
 
     public function showInventarisDetails(Inventaris $inventaris) {
-        $inventarisDetails = Inventaris::getInventarisDetails($inventaris);
+        $inventarisDetails = $inventaris;
+        $inventarisDetails->getInventarisDetails();
 
         return view('inventaris.view', compact('inventarisDetails'));
     }
@@ -55,7 +56,8 @@ class InventarisController extends Controller
     }
 
     public function showInputInventarisDetails(InputInventaris $inputInventaris) {
-        $inputInventarisDetails = InputInventaris::getInputInventarisDetails($inputInventaris);
+        $inputInventarisDetails = $inputInventaris;
+        $inputInventarisDetails->getInputInventarisDetails();
         $currentUser = User::getCurrentUser();
 
         return view('input-inventaris.view', compact('inputInventarisDetails', 'currentUser'));
@@ -80,7 +82,7 @@ class InventarisController extends Controller
             'kondisi' => 'required|string',
         ]);
 
-        Inventaris::ubahKondisiInventaris($inventaris, $request['kondisi']);
+        $inventaris->ubahKondisiInventaris($inventaris, $request['kondisi']);
 
         Alert::toast('Kondisi inventaris berubah');
 
@@ -114,7 +116,7 @@ class InventarisController extends Controller
     }
 
     public function approveInputInventaris(InputInventaris $inputInventaris) {
-        InputInventaris::approveInputInventaris($inputInventaris);
+        $inputInventaris->approveInputInventaris();
 
         Inventaris::approveInventaris($inputInventaris->load(['kantor']));
 
@@ -126,7 +128,7 @@ class InventarisController extends Controller
     public function rejectInputInventaris(InputInventaris $inputInventaris, Request $request) {
         $request->validate(['alasan_rejection' => 'required|string|max:255']);
         
-        InputInventaris::rejectInputInventaris($inputInventaris, $request->all()['alasan_rejection']);
+        $inputInventaris->rejectInputInventaris($request->all()['alasan_rejection']);
 
         Inventaris::rejectInventaris($inputInventaris);
 
@@ -163,14 +165,15 @@ class InventarisController extends Controller
     }
 
     public function showPemindahanInventarisDetails(PemindahanInventaris $pemindahanInventaris) {
-        $pemindahanInventarisDetails = PemindahanInventaris::getPemindahanInventarisDetails($pemindahanInventaris);
+        $pemindahanInventarisDetails = $pemindahanInventaris;
+        $pemindahanInventarisDetails->getPemindahanInventarisDetails();
         $currentUser = User::getCurrentUser();
 
         return view('pemindahan-inventaris.view', compact('pemindahanInventarisDetails', 'currentUser'));
     }
 
     public function approvePemindahanInventaris(PemindahanInventaris $pemindahanInventaris) {
-        PemindahanInventaris::approvePemindahanInventaris($pemindahanInventaris);
+        $pemindahanInventaris->approvePemindahanInventaris();
 
         Inventaris::approvePemindahanInventaris($pemindahanInventaris->load(['kantorTujuan', 'lantaiTujuan', 'ruanganTujuan']));
 
@@ -182,7 +185,7 @@ class InventarisController extends Controller
     public function rejectPemindahanInventaris(PemindahanInventaris $pemindahanInventaris, Request $request) {
         $request->validate(['alasan_rejection' => 'required|string|max:255']);
 
-        PemindahanInventaris::rejectPemindahanInventaris($pemindahanInventaris, $request->all()['alasan_rejection']);
+        $pemindahanInventaris->rejectPemindahanInventaris($request->all()['alasan_rejection']);
 
         Inventaris::rejectPemindahanInventaris($pemindahanInventaris);
 

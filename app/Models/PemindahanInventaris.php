@@ -90,34 +90,32 @@ class PemindahanInventaris extends Model
         return $pemindahanInventaris;
     }
 
-    static public function getPemindahanInventarisDetails(self $pemindahanInventaris) {
-        $pemindahanInventaris->load(['kantorTujuan', 'lantaiTujuan', 'ruanganTujuan', 'creator', 'firstApprover', 'secondApprover', 'inventaris']);
-
-        return $pemindahanInventaris;
+    public function getPemindahanInventarisDetails() {
+        $this->load(['kantorTujuan', 'lantaiTujuan', 'ruanganTujuan', 'creator', 'firstApprover', 'secondApprover', 'inventaris']);
     }
 
-    static public function approvePemindahanInventaris(self $pemindahanInventaris) {
+    public function approvePemindahanInventaris() {
         $currentUser = User::getCurrentUser();
-        $currentStatus = $pemindahanInventaris->status_pemindahan_inventaris;
+        $currentStatus = $this->status_pemindahan_inventaris;
         
-        if ($currentStatus == 'Pending Approval' && $pemindahanInventaris->approver_1 == $currentUser->user_id) {
-            $pemindahanInventaris->status_pemindahan_inventaris = 'Approval 1';
-            $pemindahanInventaris->approval_1_date = Carbon::now();
+        if ($currentStatus == 'Pending Approval' && $this->approver_1 == $currentUser->user_id) {
+            $this->status_pemindahan_inventaris = 'Approval 1';
+            $this->approval_1_date = Carbon::now();
         }
-        elseif ($currentStatus == 'Approval 1' && $pemindahanInventaris->approver_2 == $currentUser->user_id) {
-            $pemindahanInventaris->status_pemindahan_inventaris = 'Approval 2';
-            $pemindahanInventaris->approval_2_date = Carbon::now();
+        elseif ($currentStatus == 'Approval 1' && $this->approver_2 == $currentUser->user_id) {
+            $this->status_pemindahan_inventaris = 'Approval 2';
+            $this->approval_2_date = Carbon::now();
         }
 
-        $pemindahanInventaris->save();
+        $this->save();
     }
 
-    static public function rejectPemindahanInventaris(self $pemindahanInventaris, string $alasanRejection) {
-        $pemindahanInventaris->status_pemindahan_inventaris = 'Rejected';
-        $pemindahanInventaris->alasan_rejection = $alasanRejection;
-        $pemindahanInventaris->rejection_date = Carbon::now();
+    public function rejectPemindahanInventaris(string $alasanRejection) {
+        $this->status_pemindahan_inventaris = 'Rejected';
+        $this->alasan_rejection = $alasanRejection;
+        $this->rejection_date = Carbon::now();
 
-        $pemindahanInventaris->save();
+        $this->save();
     }
 
     static public function getLaporanPemindahanInventaris(array $request) {

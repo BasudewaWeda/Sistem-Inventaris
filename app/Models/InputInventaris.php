@@ -73,10 +73,8 @@ class InputInventaris extends Model
         return $inputInventaris;
     }
 
-    static public function getInputInventarisDetails(self $inputInventaris) {
-        $inputInventaris->load(['creator', 'firstApprover', 'secondApprover', 'kategori', 'kantor', 'lantai', 'ruangan', 'inventaris']);
-        
-        return $inputInventaris;
+    public function getInputInventarisDetails() {
+        $this->load(['creator', 'firstApprover', 'secondApprover', 'kategori', 'kantor', 'lantai', 'ruangan', 'inventaris']);
     }
 
     static public function createInputInventaris(array $data) {
@@ -98,28 +96,28 @@ class InputInventaris extends Model
         ]);
     }
 
-    static public function approveInputInventaris(self $inputInventaris) {
+    public function approveInputInventaris() {
         $currentUser = User::getCurrentUser();
-        $currentStatus = $inputInventaris->status_input_inventaris;
+        $currentStatus = $this->status_input_inventaris;
         
-        if ($currentStatus == 'Pending Approval' && $inputInventaris->approver_1 == $currentUser->user_id) {
-            $inputInventaris->status_input_inventaris = 'Approval 1';
-            $inputInventaris->approval_1_date = Carbon::now();
+        if ($currentStatus == 'Pending Approval' && $this->approver_1 == $currentUser->user_id) {
+            $this->status_input_inventaris = 'Approval 1';
+            $this->approval_1_date = Carbon::now();
         }
-        elseif ($currentStatus == 'Approval 1' && $inputInventaris->approver_2 == $currentUser->user_id) {
-            $inputInventaris->status_input_inventaris = 'Approval 2';
-            $inputInventaris->approval_2_date = Carbon::now();
+        elseif ($currentStatus == 'Approval 1' && $this->approver_2 == $currentUser->user_id) {
+            $this->status_input_inventaris = 'Approval 2';
+            $this->approval_2_date = Carbon::now();
         }
 
-        $inputInventaris->save();
+        $this->save();
     }
 
-    static public function rejectInputInventaris(self $inputInventaris, string $alasanRejection) {
-        $inputInventaris->status_input_inventaris = 'Rejected';
-        $inputInventaris->alasan_rejection = $alasanRejection;
-        $inputInventaris->rejection_date = Carbon::now();
+    public function rejectInputInventaris(string $alasanRejection) {
+        $this->status_input_inventaris = 'Rejected';
+        $this->alasan_rejection = $alasanRejection;
+        $this->rejection_date = Carbon::now();
 
-        $inputInventaris->save();
+        $this->save();
     }
     
     public function creator(): BelongsTo {

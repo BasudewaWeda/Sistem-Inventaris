@@ -63,17 +63,15 @@ class Role extends Model
         $role->permissions()->attach($data['permission_ids']);
     }
 
-    static public function updateRole(self $role, array $data) {
-        if(!$role) throw new Exception('Role not found');
-
-        $role->role_name = trim($data['role_name']);
-        $role->slug = Str::slug(trim($data['role_name']));
-        $role->editor_id = User::getCurrentUser()->user_id;
+    public function updateRole(array $data) {
+        $this->role_name = trim($data['role_name']);
+        $this->slug = Str::slug(trim($data['role_name']));
+        $this->editor_id = User::getCurrentUser()->user_id;
         
-        $role->save();
+        $this->save();
 
-        $role->permissions()->sync($data['permission_ids']);
-        $role->touch();
+        $this->permissions()->sync($data['permission_ids']);
+        $this->touch();
     }
     
     static public function checkPermission($permission_name): bool {

@@ -84,7 +84,7 @@ class ProfileController extends Controller
             ],
         ]);
 
-        User::updateCurrentRole($user, $request->all());
+        $user->updateCurrentRole($request->all());
 
         Alert::toast('Role changed');
         
@@ -112,7 +112,7 @@ class ProfileController extends Controller
             return redirect('/profile')->withError(['new_password', 'New password and confirm password must be the same']);
         }
 
-        User::updatePassword($user, $request);
+        $user->updatePassword($request);
 
         Alert::toast('Password changed');
         
@@ -145,7 +145,7 @@ class ProfileController extends Controller
             ]);
         }
         else {
-            User::forgotPassword($user, $request['email'], $sameDay);
+            $user->forgotPassword($request['email'], $sameDay);
         }
 
         return redirect('/reset-password');

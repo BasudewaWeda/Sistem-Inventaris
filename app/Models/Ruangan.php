@@ -32,8 +32,8 @@ class Ruangan extends Model
         'lantai',
     ];
 
-    static public function getRuanganDetails(self $ruangan) {
-        return $ruangan->load(['inventaris', 'lantai.kantor']);
+    public function getRuanganDetails() {
+        $this->load(['inventaris', 'lantai.kantor']);
     }
 
     static public function createRuangan(array $data, $lantaiId) {

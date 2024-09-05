@@ -30,6 +30,9 @@
                 </button>
             </div>
         </form>
+        <a href="/login" class="block font-sans text-sm antialiased text-center leading-relaxed tracking-normal text-blue-gray-900 hover:underline hover:pointer">
+            Back to login
+        </a>
     </div>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </x-guest-layout>

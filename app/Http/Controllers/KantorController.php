@@ -41,13 +41,15 @@ class KantorController extends Controller
         $editKantor = Role::checkPermission('edit-kantor');
         $deleteKantor = Role::checkPermission('delete-kantor');
 
-        $kantorDetails = Kantor::getKantorDetails($kantor);
+        $kantorDetails = $kantor;
+        $kantorDetails->getKantorDetails();
         
         return view('kantor.view', compact('editKantor', 'deleteKantor', 'kantorDetails'));
     }
 
     public function showRuanganDetails(Ruangan $ruangan) {
-        $ruanganDetails = Ruangan::getRuanganDetails($ruangan);
+        $ruanganDetails = $ruangan;
+        $ruanganDetails->getRuanganDetails();
 
         return view('kantor.ruangan', compact('ruanganDetails'));
     }
@@ -90,14 +92,13 @@ class KantorController extends Controller
     public function editKantor(Kantor $kantor, EditKantorRequest $request) {
         $request = $request->validated();
 
-        Kantor::updateKantor($kantor, $request);
+        $kantor->updateKantor($request);
 
         $lantaiData = $request['lantai'] ?? [];
         $lantaiIds = array();
         $ruanganIds = array();
         
         foreach ($lantaiData as $lantai) {
-            $newLantai = new Lantai();
             if (isset($lantai['lantai_id']) && !empty($lantai['lantai_id'])) {
                 Lantai::updateLantai($lantai['lantai_id'], $lantai);
             }
@@ -108,7 +109,6 @@ class KantorController extends Controller
 
             $ruanganData = $lantai['ruangan'] ?? [];
             foreach ($ruanganData as $ruangan) {
-                $newRuangan = new Ruangan();
                 if (isset($ruangan['ruangan_id']) && !empty($ruangan['ruangan_id'])) {
                     Ruangan::updateRuangan($ruangan['ruangan_id'], $ruangan);
                 }

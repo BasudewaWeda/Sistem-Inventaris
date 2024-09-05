@@ -104,7 +104,7 @@ class RoleController extends Controller
         ]);
 
         try {
-            Role::updateRole($role, $request->all());
+            $role->updateRole($request->all());
 
             Alert::toast('Role updated');
 

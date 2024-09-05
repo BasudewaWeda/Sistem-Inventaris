@@ -88,7 +88,7 @@ class KategoriController extends Controller
             ],
         ]);
 
-        Kategori::updateKategori($kategori, $request->all());
+        $kategori->updateKategori($request->all());
 
         Alert::toast('Kategori updated');
 

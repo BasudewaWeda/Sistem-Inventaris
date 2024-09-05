@@ -103,7 +103,7 @@ x-data="{sidebarOpen: true}"
       </nav>
   </div>
   <div
-  {{-- x-show="!sidebarOpen" --}}
+  x-show="!sidebarOpen"
   class="relative flex h-full w-full max-w-[20rem] flex-col bg-white bg-clip-border p-4 text-gray-700 shadow-xl shadow-blue-gray-900/5">
     <button @click.prevent="sidebarOpen = !sidebarOpen" class="m-1">
       <svg class="w-6 h-6 text-blue-gray-900 dark:text-blue-gray-900 rounded-lg transition-all hover:cursor-pointer hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

@@ -117,7 +117,7 @@ class UserController extends Controller
         ]);
 
         try {
-            User::updateUser($user, $request->all());
+            $user->updateUser($request->all());
 
             Alert::toast('User updated');
 
@@ -137,7 +137,7 @@ class UserController extends Controller
     }
 
     public function resetUserPassword(User $user) {
-        User::resetPassword($user);
+        $user->resetPassword();
 
         Alert::toast('User password reset');
 

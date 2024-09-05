@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\DB;
 
 class Inventaris extends Model
 {
@@ -57,9 +58,8 @@ class Inventaris extends Model
         return self::with($relations)->filter(request(['search']))->orderByDesc('updated_at', 'inventaris_id')->paginate(10)->withQueryString();
     }
 
-    static public function getInventarisDetails(self $inventaris) {
-        $inventaris->load(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover', 'qrcode']);
-        return $inventaris;
+    public function getInventarisDetails() {
+        $this->load(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover', 'qrcode']);
     }
 
     static public function getLaporanInventaris(array $request) {
@@ -148,10 +148,10 @@ class Inventaris extends Model
         self::insert($inventarisData);
     }
 
-    static public function ubahKondisiInventaris(self $inventaris, string $kondisi) {
-        $inventaris->kondisi_inventaris = $kondisi;
+    public function ubahKondisiInventaris(string $kondisi) {
+        $this->kondisi_inventaris = $kondisi;
 
-        $inventaris->save();
+        $this->save();
     }
 
     static public function approveInventaris(InputInventaris $inputInventaris) {
@@ -244,6 +244,18 @@ class Inventaris extends Model
 
         self::whereIn('inventaris_id', $inventarisIds)
             ->update(['status_inventaris' => 'Approval 2', 'updated_at' => $currentTime]); // Back to approval 2 because pemindahan rejected
+    }
+
+    static public function getInventarisKondisiCount() {
+        return self::select(DB::raw('count(inventaris_id), kondisi_inventaris'))
+            ->groupBy('kondisi_inventaris')
+            ->pluck('count', 'kondisi_inventaris');
+    }
+
+    static public function getInventarisStatusCount() {
+        return self::select(DB::raw('count(inventaris_id), status_inventaris'))
+            ->groupBy('status_inventaris')
+            ->pluck('count', 'status_inventaris');
     }
 
     // Changing number format

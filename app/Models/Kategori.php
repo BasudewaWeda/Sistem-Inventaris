@@ -48,19 +48,27 @@ class Kategori extends Model
         ]);
     }
 
-    static public function updateKategori(self $kategori, array $data) {
-        if(!$kategori) throw new Exception('Kantor not found');
-
+    public function updateKategori(array $data) {
         $currentUserId = User::getCurrentUser()->user_id;
 
-        $kategori->nama_kategori = trim($data['nama_kategori']);
-        $kategori->editor_id = $currentUserId;
+        $this->nama_kategori = trim($data['nama_kategori']);
+        $this->editor_id = $currentUserId;
 
-        $kategori->save();
+        $this->save();
+    }
+
+    static public function getKategoriCount() {
+        $kategori = self::withCount('inventaris')->pluck('inventaris_count', 'nama_kategori');
+
+        $filteredKategori = $kategori->reject(function ($item) {
+            return $item == 0;
+        });
+
+        return $filteredKategori;
     }
 
     public function inventaris(): HasMany {
-        return $this->hasMany(Inventaris::class, 'inventaris_id');
+        return $this->hasMany(Inventaris::class, 'kategori_id');
     }
 
     public function creator(): BelongsTo {

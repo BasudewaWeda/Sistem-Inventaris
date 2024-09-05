@@ -195,61 +195,59 @@ class User extends Authenticatable
         Mail::to($data['email'])->send(new SendUserPassword(trim($data['user_name']), trim($data['email']), $generatedPassword));
     }
 
-    static public function updateUser(self $user, array $data) {
-        if(!$user) throw new Exception('User not found');
+    public function updateUser(array $data) {
+        $this->user_name = trim($data['user_name']);
+        $this->slug = Str::slug(trim($data['user_name']));
+        $this->email = trim($data['email']);
+        $this->user_phone_number = trim($data['user_phone_number']);
+        $this->status = trim($data['status']);
 
-        $user->user_name = trim($data['user_name']);
-        $user->slug = Str::slug(trim($data['user_name']));
-        $user->email = trim($data['email']);
-        $user->user_phone_number = trim($data['user_phone_number']);
-        $user->status = trim($data['status']);
+        $this->editor_id = self::getCurrentUser()->user_id;
 
-        $user->editor_id = self::getCurrentUser()->user_id;
+        $this->save();
 
-        $user->save();
-
-        $user->roles()->sync($data['role_ids']);
-        $user->touch();
+        $this->roles()->sync($data['role_ids']);
+        $this->touch();
     }
 
-    static public function updateCurrentRole(self $user, $data) {
-        $user->current_role_id = $data['role'];
+    public function updateCurrentRole($data) {
+        $this->current_role_id = $data['role'];
 
-        $user->save();
+        $this->save();
     }
 
-    static public function updatePassword(self $user, $data) {
-        $user->password = Hash::make($data['new_password']);
-        $user->has_changed_password = 1;
+    public function updatePassword($data) {
+        $this->password = Hash::make($data['new_password']);
+        $this->has_changed_password = 1;
 
-        $user->save();
+        $this->save();
     }
 
-    static public function resetPassword(self $user) { // admin resets password
+    public function resetPassword() { // admin resets password
         $forgetCode = self::generateRandomString();
 
-        $user->forget_code = Hash::make($forgetCode);
-        $user->forget_expire = Carbon::now()->addDays(3);
-        $user->password = Hash::make(self::generateRandomString());
+        $this->forget_code = Hash::make($forgetCode);
+        $this->forget_expire = Carbon::now()->addDays(3);
+        $this->password = Hash::make(self::generateRandomString());
 
-        $user->save();
+        $this->save();
 
-        Mail::to($user->email)->send(new UserResetPassword($user->user_name, $forgetCode));
+        Mail::to($this->email)->send(new UserResetPassword($this->user_name, $forgetCode));
     }
 
-    static public function forgotPassword(self $user, $email, bool $sameDay) {
-        if (!$sameDay) $user->forget_code_request_amount = 0;
-        $user->forget_code_request_amount += 1;
-        $user->forget_code_request_date = Carbon::now();
+    public function forgotPassword($email, bool $sameDay) {
+        if (!$sameDay) $this->forget_code_request_amount = 0;
+        $this->forget_code_request_amount += 1;
+        $this->forget_code_request_date = Carbon::now();
 
         $forgetCode = self::generateRandomString();
 
-        $user->forget_code = Hash::make($forgetCode);
-        $user->forget_expire = Carbon::now()->addDays(3);
+        $this->forget_code = Hash::make($forgetCode);
+        $this->forget_expire = Carbon::now()->addDays(3);
 
-        $user->save();
+        $this->save();
 
-        Mail::to($email)->send(new ForgotUserPassword($user->user_name, $forgetCode));
+        Mail::to($email)->send(new ForgotUserPassword($this->user_name, $forgetCode));
     }
 
     static public function resetForgotPassword(array $data) {

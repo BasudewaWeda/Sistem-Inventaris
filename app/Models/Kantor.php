@@ -45,9 +45,8 @@ class Kantor extends Model
         return self::with(['kabupaten', 'provinsi'])->filter(request(['search']))->orderByDesc('updated_at')->paginate(8)->withQueryString();
     }
 
-    static public function getKantorDetails(self $kantor) {
-        $kantor->load(['lantai.ruangan', 'kabupaten', 'provinsi']);
-        return $kantor;
+    public function getKantorDetails() {
+        $this->load(['lantai.ruangan', 'kabupaten', 'provinsi']);
     }
 
     function scopeFilter(Builder $query, array $filters) : void {
@@ -86,21 +85,19 @@ class Kantor extends Model
         ]);
     }
 
-    static public function updateKantor(self $kantor, array $data) {
-        if(!$kantor) throw new Exception('Kantor not found');
-
+    public function updateKantor(array $data) {
         $currentUserId = User::getCurrentUser()->user_id;
 
-        $kantor->nama_kantor = trim($data['nama_kantor']);
-        $kantor->slug = Str::slug($data['nama_kantor']);
-        $kantor->kode_kantor = trim($data['kode_kantor']);
-        $kantor->nomor_telepon_kantor = trim($data['nomor_telepon_kantor']);
-        $kantor->alamat_kantor = trim($data['alamat_kantor']);
-        $kantor->provinsi_id = trim($data['provinsi_id']);
-        $kantor->kabupaten_id = trim($data['kabupaten_id']);
-        $kantor->editor_id = $currentUserId;
+        $this->nama_kantor = trim($data['nama_kantor']);
+        $this->slug = Str::slug($data['nama_kantor']);
+        $this->kode_kantor = trim($data['kode_kantor']);
+        $this->nomor_telepon_kantor = trim($data['nomor_telepon_kantor']);
+        $this->alamat_kantor = trim($data['alamat_kantor']);
+        $this->provinsi_id = trim($data['provinsi_id']);
+        $this->kabupaten_id = trim($data['kabupaten_id']);
+        $this->editor_id = $currentUserId;
 
-        $kantor->save();
+        $this->save();
     }
 
     public function inventaris(): HasMany {
