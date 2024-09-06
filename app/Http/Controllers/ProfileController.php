@@ -70,26 +70,26 @@ class ProfileController extends Controller
         return view('profile.edit', compact('currentUser'));
     }
 
-    public function updateRole(Request $request) {
-        $user = User::getCurrentUser();
+    // public function updateRole(Request $request) {
+    //     $user = User::getCurrentUser();
 
-        $request->validate([
-            'role' => [
-                'required',
-                function ($attribute, $value, $fail) use ($user) {
-                    if (!$user->roles->pluck('role_id')->contains($value)) {
-                        $fail('The selected role is invalid.');
-                    }
-                },
-            ],
-        ]);
+    //     $request->validate([
+    //         'role' => [
+    //             'required',
+    //             function ($attribute, $value, $fail) use ($user) {
+    //                 if (!$user->roles->pluck('role_id')->contains($value)) {
+    //                     $fail('The selected role is invalid.');
+    //                 }
+    //             },
+    //         ],
+    //     ]);
 
-        $user->updateCurrentRole($request->all());
+    //     $user->updateCurrentRole($request->all());
 
-        Alert::toast('Role changed');
+    //     Alert::toast('Role changed');
         
-        return redirect('/profile')->with('success', 'Role updated');
-    }
+    //     return redirect('/profile')->with('success', 'Role updated');
+    // }
 
     public function updatePassword(Request $request) {
         $request = $request->validate([

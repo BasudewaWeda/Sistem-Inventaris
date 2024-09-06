@@ -120,8 +120,11 @@ class PemindahanInventaris extends Model
 
     static public function getLaporanPemindahanInventaris(array $request) {
         $query = self::with(['kantorTujuan', 'lantaiTujuan', 'ruanganTujuan', 'creator', 'firstApprover', 'secondApprover', 'inventaris'])
-            ->whereDate('created_at', '>=', $request['start_date'])
             ->whereDate('created_at', '<=', $request['end_date']);
+
+        if (!isset($request['proporsi'])) {
+            $query->whereDate('created_at', '>=', $request['start_date']);
+        }
 
         if (!empty($request['kantor_id'])) {
             $query->where('kantor_id', $request['kantor_id']);

@@ -3,14 +3,14 @@
         <h1>Dashboard</h1>
     </div>
 
-	<div class="flex mx-8 my-4 p-4 items-center rounded-md border justify-evenly border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
-        <div class="w-1/2 flex justify-center">
+	<div class="flex flex-shrink grow m-2 p-4 items-center rounded-md border justify-evenly border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
+        <div class="w-1/3 flex justify-center">
             <canvas id="inventoryByKategoriChart"></canvas>
         </div>
-        <div class="w-1/2 flex justify-center">
+        <div class="w-1/3 flex justify-center">
             <canvas id="inventoryByKondisiChart"></canvas>
         </div>
-        <div class="w-1/2 flex justify-center">
+        <div class="w-1/3 flex justify-center">
             <canvas id="inventoryByStatusChart"></canvas>
         </div>
     </div>

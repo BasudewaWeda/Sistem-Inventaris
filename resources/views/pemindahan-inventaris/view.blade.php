@@ -1,15 +1,15 @@
 <x-app-layout>
-    <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
+    <div class="px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
       	<h1>Pemindahan Inventaris</h1>
     </div>
     
-    <div class="flex h-3/4">
-        <div class="w-6/12 px-8 pt-8 pb-2 relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border"
+    <div class="flex flex-col xl:flex-row md:h-3/4 h-full">
+        <div class="2xl:w-6/12 px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border"
         x-data="{rejectMenu: false}"
         >
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Judul Pemindahan
                 </p>
                 <p
@@ -18,9 +18,9 @@
                     {{ $pemindahanInventarisDetails->judul_pemindahan_inventaris }}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Kantor Tujuan
                 </p>
                 <p
@@ -29,9 +29,9 @@
                     {{ $pemindahanInventarisDetails->kantorTujuan->nama_kantor}}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Lantai
                 </p>
                 <p
@@ -40,9 +40,9 @@
                     {{ $pemindahanInventarisDetails->lantaiTujuan->nama_lantai}}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Ruangan
                 </p>
                 <p
@@ -51,9 +51,9 @@
                     {{ $pemindahanInventarisDetails->ruanganTujuan->nama_ruangan}}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Status
                 </p>
                 <p
@@ -63,9 +63,9 @@
                 </p>
             </div>
             @if (!empty($pemindahanInventarisDetails->alasan_rejection))
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Alasan Rejection
                 </p>
                 <p
@@ -75,9 +75,9 @@
                 </p>
             </div>
             @endif
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Approver 1
                 </p>
                 <p
@@ -86,9 +86,9 @@
                     {{ $pemindahanInventarisDetails->firstApprover->user_name }}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Approver 2
                 </p>
                 <p
@@ -97,9 +97,9 @@
                     {{ $pemindahanInventarisDetails->secondApprover->user_name }}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Created At
                 </p>
                 <p
@@ -108,9 +108,9 @@
                     {{ $pemindahanInventarisDetails->created_at }}
                 </p>
             </div>
-            <div class="w-full grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="w-full grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Creator
                 </p>
                 <p
@@ -156,7 +156,7 @@
 		    x-transition:leave-start="opacity-100 scale-100"
 		    x-transition:leave-end="opacity-0 scale-95"
 		    class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-		    	<div class="bg-white rounded-lg shadow-lg max-w-sm mx-auto p-6">
+		    	<div class="bg-white rounded-lg shadow-lg max-w-xl p-6">
 		    		<div class="py-2 text-3xl font-semibold text-blue-gray-900">
 		    			<h1>Rejection Form</h1>
 		    	  	</div>
@@ -194,51 +194,51 @@
 		    </div>
         </div>
         <div
-		class="relative w-6/12 max-h-3/4 mx-8 mt-8 mb-2 flex flex-col overflow-scroll text-gray-700 bg-white shadow-md bg-clip-border">
+		class="relative xl:w-6/12 max-h-[70vh] mx-1 xl:mx-8 mt-1 xl:mt-8 mb-2 flex flex-col overflow-y-scroll text-gray-700 bg-white shadow-md bg-clip-border">
 		    <table class="text-left table-auto px-8">
 		    <thead class="sticky top-0">
 		      <tr>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Nomor Inventaris
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Nama Inventaris
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Harga
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Tahun Penyusutan
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Kategori
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Kantor
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Lantai
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 		    		Ruangan
 		    	  </p>
 		    	</th>
-		    	<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+		    	<th class="p-2 xl-p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 		    	  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70"></p>
 		    	</th>
 		      </tr>
@@ -246,47 +246,47 @@
 		    <tbody>
 		    	@foreach ($pemindahanInventarisDetails->inventaris as $inventaris)
 		    		<tr class="even:bg-blue-gray-50/50">
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    		  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->nomor_inventaris }}
 		    		  		</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    		  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->nama_inventaris }}
 		    		  		</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    			  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->harga_inventaris }}
 		    			  	</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    			  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->tahun_penyusutan }}
 		    			  	</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    			  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->kategori->nama_kategori }}
 		    			  	</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    			  	<a class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 hover:underline" href="/kantor-management/kantor/{{ $inventaris->kantor->slug }}">
 		    				{{ Str::limit($inventaris->kantor->nama_kantor, 20, '...') }}
 		    			  	</a>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    			  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->lantai->nama_lantai }}
 		    			  	</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    			  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 		    				{{ $inventaris->ruangan->nama_ruangan }}
 		    			  	</p>
 		    			</td>
-		    			<td class="p-4">
+		    			<td class="p-2 xl-p-4">
 		    				<div class="flex gap-16 items-center">
                                 <a href="/inventaris-management/inventaris/{{ $inventaris->inventaris_id }}" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900 hover:underline">View</a>
 		    				</div>

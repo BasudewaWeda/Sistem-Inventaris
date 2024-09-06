@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
+    {{-- <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
         <h1>Change Role</h1>
     </div>
 
@@ -106,7 +106,7 @@
                 </div>
             </div>
         </form>
-    </div>
+    </div> --}}
 
     <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
         <h1>Change Password</h1>

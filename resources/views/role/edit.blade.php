@@ -1,11 +1,11 @@
 <x-app-layout>
-    <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
+    <div class="px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
       	<h1>Role Management</h1>
     </div>
 
     @if ($errors->any())
     <div role="alert"
-      class="w-1/2 relative flex p-4 mx-8 text-base text-gray-900 border border-gray-900 rounded-lg font-regular"
+      class="xl:w-1/2 relative flex p-1 md:p-2 xl:p-4 mx-1 md:mx-2 xl:mx-8 text-sm sm:text-base text-gray-900 border border-gray-900 rounded-lg font-regular"
       style="opacity: 1;">
       <div class="shrink-0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
           class="w-6 h-6">
@@ -13,7 +13,7 @@
             d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
             clip-rule="evenodd"></path>
         </svg></div>
-      <div class="ml-3 mr-12">
+      <div class="m-1 xl:ml-3 mr-1 md:mr-4 xl:mr-12">
         <p class="block font-sans text-base antialiased font-medium leading-relaxed text-inherit">Errors occured:</p>
         <ul class="mt-2 ml-2 list-disc list-inside">
             @foreach ($errors->all() as $error)
@@ -24,13 +24,13 @@
     </div>
     @endif
 
-    <div class="w-10/12 px-8 pt-8 pb-2 relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border">
+    <div class="2xl:w-1/2 px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2 relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border">
         <form action="" method="POST">
             {{ csrf_field() }}
-            <div class="grid grid-cols-10 gap-4 items-center mb-4">
+            <div class="grid grid-cols-10 gap-1 sm:gap-4 items-center mb-2 xl:mb-4">
                 <label 
                 for="name" 
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-2 block font-sans text-sm sm:text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Role Name
                 </label>
                 <input 
@@ -40,24 +40,24 @@
                 id="name"
                 required
                 value="{{ old('role_name') ?? $role->role_name }}"
-                class="col-span-8 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                class="col-span-8 rounded-md border border-blue-gray-200 border-t-transparent !border-t-blue-gray-200 bg-transparent p-2 sm:p-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-1 focus:border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                 >
             </div>
-            <div class="grid grid-cols-10 gap-4 items-start mb-4">
+            <div class="grid grid-cols-10 gap-1 sm:gap-4 items-start mb-2 xl:mb-4">
                 <h6  
-                class="mt-2 col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="mt-2 col-span-2 block font-sans text-sm sm:text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Permissions
                 </h6>
                 <div class="col-span-8">
                     @foreach ($permissionGroups as $permissionGroup)
                     <div class="xl:grid xl:grid-cols-4 flex flex-wrap rounded-md border border-blue-gray-200 mb-4">
                         <h6  
-                        class="mt-2 ml-2 col-span-4 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                        class="mt-2 ml-2 col-span-4 block font-sans text-sm sm:text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                             {{ $permissionGroup->alias }}
                         </h6>
                         @foreach ($permissionGroup->permissions as $permission)
                         <div class="inline-flex items-center">
-                            <label class="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="check">
+                            <label class="relative flex items-center p-2 sm:p-3 rounded-full cursor-pointer" htmlFor="check">
                                 <input type="checkbox"
                                     class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                                     id="{{ $permission->permission_name }}"

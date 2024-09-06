@@ -1,14 +1,14 @@
 <x-app-layout>
-    <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
+    <div class="px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
       	<h1>Inventaris</h1>
     </div>
 
     
-    <div class="flex h-3/4">
-        <div class="w-10/12 px-8 pt-8 pb-2 relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border">
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+    <div class="flex flex-col md:flex-row h-3/4">
+        <div class="md:w-10/12 px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2 relative text-gray-700 bg-transparent shadow-none rounded-xl bg-clip-border">
+            <div class="grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Nomor Inventaris
                 </p>
                 <p
@@ -17,9 +17,9 @@
                     {{ $inventarisDetails->nomor_inventaris }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Harga
                 </p>
                 <p
@@ -28,9 +28,9 @@
                     {{ $inventarisDetails->harga_inventaris }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class="grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Tanggal Pembelian
                 </p>
                 <p
@@ -39,9 +39,9 @@
                     {{ $inventarisDetails->tanggal_pembelian->format('Y-m-d') }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Tahun Penyusutan
                 </p>
                 <p
@@ -50,9 +50,9 @@
                     {{ $inventarisDetails->tahun_penyusutan }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Kategori
                 </p>
                 <p
@@ -61,9 +61,9 @@
                     {{ $inventarisDetails->kategori->nama_kategori }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Status
                 </p>
                 <p
@@ -72,9 +72,9 @@
                     {{ $inventarisDetails->status_inventaris }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Kondisi
                 </p>
                 <p
@@ -83,9 +83,9 @@
                     {{ $inventarisDetails->kondisi_inventaris }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Penempatan
                 </p>
                 <p
@@ -95,9 +95,9 @@
                     {{' | ' . $inventarisDetails->lantai->nama_lantai . ' | ' . $inventarisDetails->ruangan->nama_ruangan}}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Approver 1
                 </p>
                 <p
@@ -106,9 +106,9 @@
                     {{ $inventarisDetails->firstApprover->user_name }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Approver 2
                 </p>
                 <p
@@ -117,9 +117,9 @@
                     {{ $inventarisDetails->secondApprover->user_name }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Created At
                 </p>
                 <p
@@ -128,9 +128,9 @@
                     {{ $inventarisDetails->created_at }}
                 </p>
             </div>
-            <div class="w-4/6 grid grid-cols-10 items-center mb-4 border-b-2">
+            <div class=" grid grid-cols-10 items-center mb-2 xl:mb-4 border-b-2">
                 <p  
-                class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+                class="col-span-5 md:col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                     Creator
                 </p>
                 <p
@@ -139,7 +139,7 @@
                     {{ $inventarisDetails->creator->user_name }}
                 </p>
             </div>
-            <div class="flex gap-2 justify-between w-4/6">
+            <div class="flex gap-2 justify-between ">
                 <div class="flex">
                     <a 
                         href="/inventaris-management/kondisi/{{ $inventarisDetails->inventaris_id }}" 
@@ -160,9 +160,9 @@
             </div>
         </div>
         @if (!empty($inventarisDetails->qrcode))
-        <div class="relative w-6/12 max-h-[70vh] mx-8 mt-8 mb-2 flex flex-col text-gray-700 bg-white">
+        <div class="relative md:w-1/2 max-h-[70vh] md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 mb-2 flex flex-col text-gray-700 bg-white items-center">
             <p  
-            class="col-span-2 block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
+            class="block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-blue-gray-900">
                 QR Code
             </p>
             <div class="flex flex-col">

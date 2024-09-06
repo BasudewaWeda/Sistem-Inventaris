@@ -1,54 +1,54 @@
 <x-app-layout>
-    <div class="px-8 pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
+    <div class="px-1 md:px-2 xl:px-8 pt-1 md:pt-2 xl:pt-8 pb-2 text-3xl font-semibold text-blue-gray-900">
       	<h1>Laporan Pemindahan Inventaris</h1>
     </div>
 
     <div
-		class="relative flex mx-8 flex-col overflow-scroll text-gray-700 bg-white shadow-md bg-clip-border">
+		class="relative mx-1 sm:mx-4 lg:mx-8 text-gray-700 bg-white shadow-md bg-clip-border overflow-y-scroll">
 		<table class="w-full text-left table-auto px-8">
 		<thead>
 		  <tr>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 				Judul Pemindahan
 			  </p>
 			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 				Kantor Tujuan
 			  </p>
 			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 				Lantai
 			  </p>
 			</th>
-            <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+            <th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
               <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
                 Ruangan
               </p>
             </th>
-            <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+            <th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
               <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
                 Jumlah Inventaris
               </p>
             </th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 				Status Pemindahan
 			  </p>
 			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 				Creator
 			  </p>
 			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 				Created At
 			  </p>
 			</th>
-			<th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+			<th class="p-2 lg:p-4 border-b border-blue-gray-100 bg-blue-gray-50">
 			  <p class="block font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
 			  </p>
 			</th>
@@ -57,49 +57,49 @@
 		<tbody>
 			@foreach ($laporanRecord as $pemindahanInventaris)
 				<tr class="even:bg-blue-gray-50/50">
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 				  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 						{{ $pemindahanInventaris->judul_pemindahan_inventaris }}
 				  		</p>
 					</td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 				  		<a class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 hover:underline" href='/kantor-management/kantor/{{ $pemindahanInventaris->kantorTujuan->slug }}'>
 						{{ Str::limit($pemindahanInventaris->kantorTujuan->nama_kantor, 20, '...') }}
 				  		</a>
 					</td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 						{{ $pemindahanInventaris->lantaiTujuan->nama_lantai }}
 					  	</p>
 					</td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 						{{ $pemindahanInventaris->ruanganTujuan->nama_ruangan }}
 					  	</p>
 					</td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 						{{ $pemindahanInventaris->inventaris->count() ?? 0 }}
 					  	</p>
 					</td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 						{{ $pemindahanInventaris->status_pemindahan_inventaris }}
 					  	</p>
 					</td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 					  	<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 						@if ($pemindahanInventaris->creator)
 						{{ $pemindahanInventaris->creator->user_name }}
 					  	</p>
 						@endif
 					</td>
-                    <td class="p-4">
+                    <td class="p-2 lg:p-4">
                         <p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
                         {{ $pemindahanInventaris->created_at }}
                         </p>
                     </td>
-					<td class="p-4">
+					<td class="p-2 lg:p-4">
 						<div class="flex gap-16 items-center">
                             <a href="/approval-pemindahan-inventaris/{{ $pemindahanInventaris->pemindahan_inventaris_id }}" class="block font-sans text-sm antialiased font-medium leading-normal text-blue-gray-900 hover:underline">View</a>
 						</div>
@@ -114,7 +114,7 @@
         {{ $laporanRecord->links() }}
 	</div>
 
-    <div class="flex mx-8">
+    <div class="flex mx-1 sm:mx-4 lg:mx-8">
         <a 
             href="/laporan-pemindahan-inventaris" 
             data-ripple-dark="true"
@@ -122,7 +122,9 @@
             Back
         </a>
         <form action="/laporan-pemindahan-inventaris/download" class="ml-auto">
+			@if (!empty($request['start_date']))
             <input type="hidden" value="{{ $request['start_date'] }}" name="start_date">
+			@endif
             <input type="hidden" value="{{ $request['end_date'] }}" name="end_date">
             @if (!empty($request['kategori_id']))
             <input type="hidden" value="{{ $request['kategori_id'] }}" name="kategori_id">

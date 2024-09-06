@@ -35,8 +35,8 @@ Route::get('/', [DashboardController::class, 'showDashboard'])
 Route::get('/profile', [ProfileController::class, 'profile'])
     ->middleware(['auth']);
 
-Route::post('/profile/change-role', [ProfileController::class, 'updateRole'])
-    ->middleware(['auth'])->name('profile.change-role');
+// Route::post('/profile/change-role', [ProfileController::class, 'updateRole'])
+//     ->middleware(['auth'])->name('profile.change-role');
 
 Route::post('/profile/change-password', [ProfileController::class, 'updatePassword'])
     ->middleware(['auth'])->name('profile.change-password');

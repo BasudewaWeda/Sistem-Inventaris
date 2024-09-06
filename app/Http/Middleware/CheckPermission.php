@@ -28,14 +28,14 @@ class CheckPermission
 
             return redirect('/profile');
         }
-        
-        $user_current_role = $currentUser->currentRole;
-        
+                
         foreach ($permissions as $permission_check) {
-            foreach ($user_current_role->permissions as $permission) {
-                // permission_name = slug
-                if ($permission->permission_name == $permission_check) {
-                    return $next($request);
+            foreach ($currentUser->roles as $role) {
+                foreach ($role->permissions as $permission) {
+                    // permission_name = slug
+                    if ($permission->permission_name == $permission_check) {
+                        return $next($request);
+                    }
                 }
             }
         }

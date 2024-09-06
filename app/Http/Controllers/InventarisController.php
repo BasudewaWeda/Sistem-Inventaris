@@ -79,10 +79,10 @@ class InventarisController extends Controller
 
     public function editKondisiInventaris(Inventaris $inventaris, Request $request) {
         $request = $request->validate([
-            'kondisi' => 'required|string',
+            'kondisi' => 'required|string:255',
         ]);
 
-        $inventaris->ubahKondisiInventaris($inventaris, $request['kondisi']);
+        $inventaris->ubahKondisiInventaris($request['kondisi']);
 
         Alert::toast('Kondisi inventaris berubah');
 
@@ -203,7 +203,7 @@ class InventarisController extends Controller
 
     public function laporanInventaris(Request $request) {
         $request = $request->validate([
-            'start_date' => 'required|date|before_or_equal:end_date|before_or_equal:today',
+            'start_date' => 'required_unless:proporsi,on|date|before_or_equal:end_date|before_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
             'end_date' => [
                 'required',
@@ -211,14 +211,17 @@ class InventarisController extends Controller
                 'after_or_equal:start_date',
                 'before_or_equal:today',
                 function ($attribute, $value, $fail) use ($request){
-                    $startDate = Carbon::parse($request->start_date);
-                    $endDate = Carbon::parse($value);
-    
-                    if ($startDate->diffInMonths($endDate) > 1) {
-                        $fail('The end date must be within 1 month of the start date');
+                    if ($request->has('proposisi')) {
+                        $startDate = Carbon::parse($request->start_date);
+                        $endDate = Carbon::parse($value);
+        
+                        if ($startDate->diffInMonths($endDate) > 1) {
+                            $fail('The end date must be within 1 month of the start date');
+                        }
                     }
                 },
             ],
+            'proporsi' => 'nullable',
             'kategori_id' => 'nullable|numeric|exists:kategori,kategori_id',
             'kantor_id' => 'nullable|numeric|exists:kantor,kantor_id',
             'status' => 'nullable|in:Approval 1,Approval 2,Pending Approval',
@@ -242,7 +245,7 @@ class InventarisController extends Controller
 
     public function laporanPemindahanInventaris(Request $request) {
         $request = $request->validate([
-            'start_date' => 'required|date|before_or_equal:end_date|before_or_equal:today',
+            'start_date' => 'required_unless:proporsi,on|date|before_or_equal:end_date|before_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date|before_or_equal:today',
             'end_date' => [
                 'required',
@@ -258,6 +261,7 @@ class InventarisController extends Controller
                     }
                 },
             ],
+            'proporsi' => 'nullable',
             'kantor_id' => 'nullable|numeric|exists:kantor,kantor_id',
             'status' => 'nullable|in:Approval 1,Approval 2,Pending Approval',
         ]);

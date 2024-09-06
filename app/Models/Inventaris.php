@@ -64,8 +64,11 @@ class Inventaris extends Model
 
     static public function getLaporanInventaris(array $request) {
         $query = self::with(['kategori', 'kantor', 'lantai', 'ruangan', 'creator', 'firstApprover', 'secondApprover'])
-            ->whereDate('created_at', '>=', $request['start_date'])
             ->whereDate('created_at', '<=', $request['end_date']);
+
+        if (!isset($request['proporsi'])) {
+            $query->whereDate('created_at', '>=', $request['start_date']);
+        }
 
         if (!empty($request['kategori_id'])) {
             $query->where('kategori_id', $request['kategori_id']);

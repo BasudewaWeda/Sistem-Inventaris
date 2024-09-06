@@ -75,11 +75,11 @@ class Role extends Model
     }
     
     static public function checkPermission($permission_name): bool {
-        $role = Auth::user()->currentRole;
+        $currentUser = Auth::user();
 
-        if ($role == null) return false;
-
-        if ($role->permissions->contains('permission_name', $permission_name)) return true;
+        foreach ($currentUser->roles as $role) {
+            if ($role->permissions->contains('permission_name', $permission_name)) return true;
+        }
 
         return false;
     }
