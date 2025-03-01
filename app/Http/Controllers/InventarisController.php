@@ -262,8 +262,8 @@ class InventarisController extends Controller
                 },
             ],
             'proporsi' => 'nullable',
-            'kantor_id' => 'nullable|numeric|exists:kantor,kantor_id',
-            'status' => 'nullable|in:Approval 1,Approval 2,Pending Approval',
+            'kantor_id_tujuan' => 'nullable|numeric|exists:kantor,kantor_id',
+            'status_pemindahan_inventaris' => 'nullable|in:Approval 1,Approval 2,Pending Approval',
         ]);
 
         $laporanRecord = PemindahanInventaris::getLaporanPemindahanInventaris($request);

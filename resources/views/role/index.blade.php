@@ -65,8 +65,8 @@
 					  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 							@if ($role->creator)
 							{{ $role->creator->user_name }}
+							</p>
 							@endif
-					  		</p>
 						</td>
 						<td class="p-2 lg:p-4">
 					  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
@@ -77,8 +77,8 @@
 					  		<p class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
 							@if ($role->editor)
 							{{ $role->editor->user_name }}
+							</p>
 							@endif
-					  		</p>
 						</td>
 						<td class="p-2 lg:p-4">
 							<div class="flex gap-16 items-center">

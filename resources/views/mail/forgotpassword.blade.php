@@ -12,7 +12,7 @@
 
     <p>You can reset your password by visiting the link below:</p>
 
-    <p><strong>Password Reset Link:</strong> <a href="http://testbreeze.test/reset-password">http://testbreeze.test/reset-password</a></p>
+    <p><strong>Password Reset Link:</strong> <a href="http://sisteminventarisbprlestari.test/reset-password">http://sisteminventarisbprlestari.test/reset-password</a></p>
 
     <p>Please note that this code is only valid for 3 days. If you do not use the code within this period, you will need to request a new one.</p>
 

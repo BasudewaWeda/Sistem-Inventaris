@@ -26,6 +26,8 @@ class Role extends Model
     protected $fillable = [
         'role_name',
         'slug',
+        'creator_id',
+        'editor_id',
     ];
 
     protected static function boot()

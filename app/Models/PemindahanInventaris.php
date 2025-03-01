@@ -126,12 +126,12 @@ class PemindahanInventaris extends Model
             $query->whereDate('created_at', '>=', $request['start_date']);
         }
 
-        if (!empty($request['kantor_id'])) {
-            $query->where('kantor_id', $request['kantor_id']);
+        if (!empty($request['kantor_id_tujuan'])) {
+            $query->where('kantor_id_tujuan', $request['kantor_id_tujuan']);
         }
 
-        if (!empty($request['status'])) {
-            $query->where('status_inventaris', $request['status']);
+        if (!empty($request['status_pemindahan_inventaris'])) {
+            $query->where('status_pemindahan_inventaris', $request['status_pemindahan_inventaris']);
         }
 
         return $query->orderByDesc('created_at')->paginate(10)->withQueryString();
